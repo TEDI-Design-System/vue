@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="max-age=0, no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <title>TEDI Storybook</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NTAuMzkgODUwLjM5Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjMDA1YWEzOwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICNmZmY7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxyZWN0IGNsYXNzPSJjbHMtMSIgeD0iLTguNSIgeT0iLTguNSIgd2lkdGg9Ijg2Ny40IiBoZWlnaHQ9Ijg2Ny40Ii8+CiAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTU2LjA4LDM3Ny41NWMxMi4yMSwxMi4xNiwxOS43NiwyOC45NSwxOS43Niw0Ny40OCwwLDIuMi0uMTEsNC4zOC0uMzEsNi41Mi0xLjQ4LDE2LjA2LTguNjQsMzAuNS0xOS40Nyw0MS4yOS0yLjQyLDIuNDEtNS4wNSw0LjY2LTcuODMsNi43LTEuMTMuNjctMi4xOSwxLjM5LTMuMjIsMi4yLTEuMTQuODctMi4yMiwxLjgyLTMuMjQsMi44My02LjEsNi4wNi05Ljg4LDE0LjQ3LTkuODgsMjMuNzMsMCwxMC44Miw1LjE0LDIwLjQzLDEzLjExLDI2LjU3LDEuMDMuODEsMi4wOSwxLjUzLDMuMjIsMi4yLDIuNzcsMi4wNCw1LjQxLDQuMjgsNy44Myw2LjdsLjAzLS4wNWMxMi4yMSwxMi4xNiwxOS43NiwyOC45NSwxOS43Niw0Ny40OHMtNy41NSwzNS4zMi0xOS43Niw0Ny40OWMtMTIuMTksMTIuMTUtMjkuMDQsMTkuNjctNDcuNjQsMTkuNjctMjIuNiwwLTQyLjYyLTExLjExLTU0Ljg1LTI4LjExLS40NC0uNzMtLjkyLTEuNDEtMS40NC0yLjEtLjk3LTEuMjgtMi4wMy0yLjUxLTMuMTctMy42NC02LjEtNi4wNy0xNC41Mi05Ljg0LTIzLjgyLTkuODQtMTAuODMsMC0yMC40Niw1LjA5LTI2LjYsMTMtLjgxLDEuMDEtMS41NSwyLjA3LTIuMjIsMy4xOC0uMDIuMDItLjAzLjA1LS4wMy4wNi0yLjA1LDIuNzYtNC4zLDUuMzktNi43Miw3LjgtMTIuMTksMTIuMTUtMjkuMDQsMTkuNjctNDcuNjQsMTkuNjctMzcuMjIsMC02Ny40LTMwLjA3LTY3LjQtNjcuMTUsMC0xOC41NSw3LjU1LTM1LjMyLDE5Ljc2LTQ3LjQ4LDIuNTYtMi41NSw1LjMzLTQuODksOC4yNy03LjAxLjc4LS40NywxLjUzLTEsMi4yNy0xLjU0bC4wNS0uMDVjMS4yOC0uOTMsMi40OS0xLjk5LDMuNjEtMy4xMSw2LjEtNi4wNiw5Ljg4LTE0LjQ3LDkuODgtMjMuNzNzLTMuNzctMTcuNjgtOS44OC0yMy43M2MtMS4xMy0xLjEyLTIuMzMtMi4xOC0zLjYxLTMuMTEtLjAyLS4wMy0uMDMtLjA1LS4wNS0uMDUtLjczLS41NC0xLjQ4LTEuMDctMi4yNy0xLjU0LTE2Ljk3LTEyLjE5LTI4LjAyLTMyLjA3LTI4LjAyLTU0LjUxdi0uMTVzMC0uMTUsMC0uMTVjMC0xOC41NSw3LjU1LTM1LjMyLDE5Ljc2LTQ3LjQ4LDIuNTYtMi41NSw1LjMzLTQuODksOC4yNy03LjAxLjc4LS40NywxLjUzLTEsMi4yNy0xLjU0bC4wNS0uMDVjMS4yOC0uOTMsMi40OS0xLjk5LDMuNjEtMy4xMSw2LjEtNi4wNiw5Ljg4LTE0LjQ3LDkuODgtMjMuNzNzLTMuNzctMTcuNjgtOS44OC0yMy43M2MtMS4xMy0xLjEyLTIuMzMtMi4xOC0zLjYxLTMuMTEtLjAyLS4wMy0uMDMtLjA1LS4wNS0uMDUtLjczLS41NC0xLjQ4LTEuMDctMi4yNy0xLjU0LTE2Ljk3LTEyLjE5LTI4LjAyLTMyLjA3LTI4LjAyLTU0LjUxLDAtMTguNTUsNy41NS0zNS4zMiwxOS43Ni00Ny40OCwxMi4xOS0xMi4xNSwyOS4wNC0xOS42Nyw0Ny42NC0xOS42N3MzNS40NSw3LjUyLDQ3LjY0LDE5LjY3YzIuNDIsMi40MSw0LjY2LDUsNi42Nyw3Ljc2LjcyLDEuMTgsMS40OCwyLjMsMi4zNiwzLjM4LjgzLDEuMDksMS43NSwyLjEyLDIuNywzLjA4LDYuMSw2LjA3LDE0LjUyLDkuODQsMjMuODIsOS44NHMxNy43Mi0zLjc1LDIzLjgyLTkuODRjMS4xMy0xLjExLDIuMTYtMi4zLDMuMTEtMy41Ny4wMy0uMDMuMDUtLjA1LjA2LS4wOC41NS0uNzMsMS4wOC0xLjQ4LDEuNTUtMi4yNiwyLjEzLTIuOTYsNC41LTUuNzMsNy4wOC04LjMsMTIuMTktMTIuMTUsMjkuMDQtMTkuNjcsNDcuNjQtMTkuNjdzMzUuNDUsNy41Miw0Ny42NCwxOS42N2MxMi4yMSwxMi4xNiwxOS43NiwyOC45NSwxOS43Niw0Ny40OHMtNy41NSwzNS4zMi0xOS43Niw0Ny40OGMtMi40MiwyLjQxLTUuMDUsNC42Ni03LjgzLDYuNy0xLjEzLjY3LTIuMTksMS4zOS0zLjIyLDIuMi0xLjE0Ljg3LTIuMjIsMS44Mi0zLjI0LDIuODMtNi4xLDYuMDYtOS44OCwxNC40Ny05Ljg4LDIzLjczLDAsMTAuODIsNS4xNCwyMC40MywxMy4xMSwyNi41NywxLjAzLjgxLDIuMDksMS41MywzLjIyLDIuMiwyLjc3LDIuMDQsNS40MSw0LjI4LDcuODMsNi43bC4wMy0uMDVaIi8+Cjwvc3ZnPg==" />
+
+  <!--
+    Platform-agnostic landing page for the TEDI Storybook builds.
+    Copy this file (and index_suffix.html) as-is between the Angular, React and Vue repos.
+    Everything framework-specific (name, versions, timestamps, branches) is injected
+    at deploy time into `window.__TEDI_PAGES__` between this file and index_suffix.html.
+    Styling: TEDI Core design tokens + fonts from the CDN, component styles hand-written below.
+  -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tedi-design-system/core@6/index.css" />
+
+  <style>
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--general-surface-tertiary);
+      color: var(--general-text-primary);
+      font-family: var(--family-default), system-ui, sans-serif;
+      font-size: var(--body-regular-size);
+      line-height: var(--body-regular-line-height);
+      font-variation-settings: "wdth" 100;
+    }
+    /* Core's index.css sets `html,body{height:100%;background-color:…}` (specificity 0,0,2).
+       Override so body grows with content, fills the viewport, and lays out header/main/footer
+       in a column so the footer sits at the bottom even on short pages. */
+    html body {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      min-height: 100dvh;
+      background: var(--general-surface-tertiary);
+    }
+
+    a { color: inherit; }
+
+    /* ---- Header ---------------------------------------------------------- */
+    .tsb-header {
+      display: flex;
+      align-items: center;
+      flex: none;
+      min-height: 84px;
+      padding: 16px 24px;
+      background: var(--header-background);
+      box-shadow: 0 1px 5px 0 var(--tedi-alpha-20);
+    }
+    .tsb-header__logo { height: 32px; width: auto; display: block; }
+
+    /* ---- Footer ---------------------------------------------------------- */
+    .tsb-footer {
+      flex: none;
+      display: flex;
+      justify-content: center;
+      padding: 8px 40px;
+      background: var(--footer-bottom-background);
+      color: var(--general-text-white);
+      font-size: var(--body-link-size-regular);
+      line-height: var(--body-regular-line-height);
+    }
+    .tsb-footer a {
+      color: var(--general-text-white);
+      text-decoration: underline;
+    }
+
+    /* ---- Layout ---------------------------------------------------------- */
+    .tsb-main {
+      flex: 1 0 auto;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .tsb-stack { display: flex; flex-direction: column; }
+    .tsb-stack--8 { gap: 8px; }
+    .tsb-stack--16 { gap: 16px; }
+    .tsb-stack--24 { gap: 24px; }
+
+    /* ---- Breadcrumb ------------------------------------------------------ */
+    .tsb-breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 16px;
+      font-size: var(--body-small-regular-size);
+      line-height: var(--body-small-regular-line-height);
+    }
+    .tsb-breadcrumb a {
+      color: var(--link-primary-default);
+      text-decoration: underline;
+    }
+    .tsb-breadcrumb__sep { display: inline-flex; color: var(--general-text-secondary); }
+    .tsb-breadcrumb__current { color: var(--general-text-secondary); }
+
+    /* ---- Typography ------------------------------------------------------ */
+    .tsb-h1 {
+      margin: 0;
+      font-family: var(--family-heading), system-ui, sans-serif;
+      font-size: var(--heading-h1-size);
+      line-height: var(--heading-h1-line-height);
+      font-weight: var(--heading-h1-weight);
+      color: var(--general-text-primary);
+    }
+    .tsb-h3 {
+      margin: 0;
+      font-family: var(--family-heading), system-ui, sans-serif;
+      font-size: var(--heading-h3-size);
+      line-height: var(--heading-h3-line-height);
+      font-weight: var(--heading-h3-weight);
+      color: var(--general-text-primary);
+    }
+    .tsb-lead { margin: 0; color: var(--general-text-primary); }
+    .tsb-muted { color: var(--general-text-secondary); }
+    .tsb-note {
+      margin: 0;
+      font-size: var(--body-small-regular-size);
+      line-height: var(--body-small-regular-line-height);
+      font-style: italic;
+      color: var(--general-text-secondary);
+    }
+
+    /* ---- Callout (brand card) ------------------------------------------- */
+    .tsb-callout {
+      background: var(--card-background-brand-tertiary);
+      border-radius: var(--card-radius-rounded);
+      padding: 16px;
+    }
+
+    /* ---- Stepper --------------------------------------------------------- */
+    .tsb-stepper {
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .tsb-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 16px;
+      min-width: 0;
+    }
+    .tsb-step--grow { flex: 1 1 0; }
+    .tsb-step__num {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--stepper-step-default-border);
+      border-radius: 100px;
+      background: var(--stepper-step-default-bg);
+      font-size: var(--body-small-bold-size);
+      font-weight: var(--body-small-bold-weight);
+      color: var(--general-text-secondary);
+    }
+    .tsb-step__title { color: var(--general-text-primary); }
+    .tsb-step__sub {
+      font-size: var(--body-small-regular-size);
+      line-height: var(--body-small-regular-line-height);
+      color: var(--general-text-tertiary);
+    }
+    .tsb-stepper__line {
+      flex: none;
+      width: 32px;
+      height: 2px;
+      /* align with the vertical center of the 24px step number (8px step padding + 12px) */
+      margin-top: 19px;
+      background: var(--general-border-secondary);
+    }
+    @media (max-width: 720px) {
+      .tsb-stepper { flex-direction: column; align-items: stretch; gap: 0; }
+      /* Hide the horizontal connectors and draw vertical ones between stacked circles. */
+      .tsb-stepper__line { display: none; }
+      .tsb-step { position: relative; }
+      .tsb-step:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        left: 27.5px; /* circle centre: 16px step padding + 12px − 0.5px (half of 1px line) */
+        top: 32px; /* just below the 24px circle (8px padding + 24px) */
+        width: 1px;
+        height: calc(100% - 24px); /* reaches the next circle's top */
+        background: var(--general-border-secondary);
+      }
+    }
+
+    /* ---- Card button (row) ---------------------------------------------- */
+    .tsb-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--card-background-primary);
+      border: 1px solid var(--card-border-primary);
+      border-radius: var(--card-radius-rounded);
+      text-decoration: none;
+      color: inherit;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+    /* Matches the TEDI card-button component: hover/active change border + background, not a shadow */
+    .tsb-card:hover {
+      background: var(--button-card-hover-background);
+      border-color: var(--button-card-hover-border);
+    }
+    .tsb-card:hover .tsb-card__arrow { color: var(--button-card-icon-hover); }
+    .tsb-card:active {
+      background: var(--button-card-active-background);
+      border-color: var(--button-card-active-border);
+    }
+    .tsb-card:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 1px var(--tedi-neutral-100), 0 0 0 3px var(--tedi-primary-500);
+    }
+    .tsb-card__title {
+      margin: 0;
+      font-family: var(--family-heading), system-ui, sans-serif;
+      font-size: var(--heading-h6-size);
+      line-height: var(--heading-h6-line-height);
+      font-weight: var(--heading-h6-weight);
+      color: var(--general-text-primary);
+      word-break: break-word;
+    }
+    /* Everything except the arrow lives here; it may wrap internally on narrow widths */
+    .tsb-card__body {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+    /* Main/RC row: name + version tag grouped left, meta pushed right */
+    .tsb-card__lead { display: flex; align-items: center; gap: 16px; flex: 1 1 auto; min-width: 0; }
+    /* Dev row: branch name takes remaining space */
+    .tsb-card__grow { flex: 1 1 auto; min-width: 0; }
+    .tsb-card__meta {
+      color: var(--general-text-secondary);
+      font-size: var(--body-small-regular-size);
+      line-height: var(--body-small-regular-line-height);
+      white-space: nowrap;
+    }
+    /* Always at the end, vertically centered against the (possibly multi-line) body */
+    .tsb-card__arrow {
+      flex: none;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--link-primary-default);
+    }
+
+    /* ---- Tag & status badge --------------------------------------------- */
+    .tsb-tag {
+      flex: none;
+      padding: 2px 8px;
+      border-radius: var(--tag-default-radius);
+      background: var(--tag-primary-background);
+      border: 1px solid var(--tag-primary-border);
+      font-size: var(--body-small-regular-size);
+      line-height: var(--body-small-regular-line-height);
+      color: var(--general-text-primary);
+      white-space: nowrap;
+    }
+    .tsb-badge {
+      flex: none;
+      padding: 2px 8px;
+      border-radius: var(--tag-default-radius);
+      border: 1px solid transparent;
+      font-size: var(--body-small-regular-size);
+      line-height: var(--body-small-regular-line-height);
+      white-space: nowrap;
+    }
+    .tsb-badge--success {
+      background: var(--status-badge-background-success);
+      border-color: var(--status-badge-border-success);
+      color: var(--status-badge-text-success);
+    }
+    .tsb-badge--brand {
+      background: var(--status-badge-background-brand);
+      border-color: var(--status-badge-border-brand);
+      color: var(--status-badge-text-brand);
+    }
+    .tsb-badge--warning {
+      background: var(--status-badge-background-warning);
+      border-color: var(--status-badge-border-warning);
+      color: var(--status-badge-text-warning);
+    }
+    .tsb-badge--neutral {
+      background: var(--status-badge-background-neutral);
+      border-color: var(--status-badge-border-neutral);
+      color: var(--status-badge-text-neutral);
+    }
+
+    /* ---- Separator ------------------------------------------------------- */
+    .tsb-separator {
+      height: 1px;
+      border: 0;
+      margin: 0;
+      background: var(--general-separator-primary);
+    }
+
+    .tsb-empty { color: var(--general-text-tertiary); }
+  </style>
+
+  <script type="text/javascript">
+    // Ensure relative branch links (./main/, ./rc/, ...) resolve against this page.
+    document.head.innerHTML += "<base href='" + window.location.origin + window.location.pathname + "' />";
+  </script>
+</head>
+<body>
+  <header class="tsb-header">
+    <a href="https://storybook.tedi.ee/" aria-label="TEDI Library home"><img class="tsb-header__logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NTQuMTIgMzE1Ljg1IiB3aWR0aD0iMTAwIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjMDA1YWEzOwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xOTAuNjgsMTI1LjY1YzguMjcsOC4yNCwxMy4zOCwxOS42MSwxMy4zOCwzMi4xNiwwLDEuNDktLjA3LDIuOTYtLjIxLDQuNDItMSwxMC44OC01Ljg1LDIwLjY2LTEzLjE5LDI3Ljk3LTEuNjQsMS42My0zLjQyLDMuMTUtNS4zLDQuNTQtLjc2LjQ1LTEuNDguOTQtMi4xOCwxLjQ5LS43Ny41OS0xLjUsMS4yMy0yLjE5LDEuOTItNC4xMyw0LjEtNi42OSw5LjgtNi42OSwxNi4wNywwLDcuMzMsMy40OCwxMy44NCw4Ljg4LDE3Ljk5LjcuNTUsMS40MiwxLjAzLDIuMTgsMS40OSwxLjg3LDEuMzgsMy42NiwyLjksNS4zLDQuNTRsLjAyLS4wM2M4LjI3LDguMjQsMTMuMzgsMTkuNjEsMTMuMzgsMzIuMTZzLTUuMTEsMjMuOTItMTMuMzgsMzIuMTZjLTguMjYsOC4yMy0xOS42NywxMy4zMi0zMi4yNywxMy4zMi0xNS4zMSwwLTI4Ljg3LTcuNTItMzcuMTUtMTkuMDQtLjMtLjQ5LS42Mi0uOTYtLjk3LTEuNDItLjY2LS44Ny0xLjM4LTEuNy0yLjE1LTIuNDctNC4xMy00LjExLTkuODMtNi42Ny0xNi4xMy02LjY3LTcuMzQsMC0xMy44NiwzLjQ1LTE4LjAyLDguODEtLjU1LjY5LTEuMDUsMS40LTEuNSwyLjE1LS4wMS4wMS0uMDIuMDMtLjAyLjA0LTEuMzksMS44Ny0yLjkxLDMuNjUtNC41NSw1LjI4LTguMjYsOC4yMy0xOS42NywxMy4zMi0zMi4yNywxMy4zMi0yNS4yMSwwLTQ1LjY1LTIwLjM3LTQ1LjY1LTQ1LjQ4LDAtMTIuNTYsNS4xMS0yMy45MiwxMy4zOC0zMi4xNiwxLjc0LTEuNzMsMy42MS0zLjMxLDUuNi00Ljc1LjUzLS4zMiwxLjA0LS42OCwxLjU0LTEuMDRsLjAzLS4wM2MuODctLjYzLDEuNjgtMS4zNSwyLjQ1LTIuMTEsNC4xMy00LjEsNi42OS05LjgsNi42OS0xNi4wN3MtMi41NS0xMS45Ny02LjY5LTE2LjA3Yy0uNzYtLjc2LTEuNTgtMS40OC0yLjQ1LTIuMTEtLjAxLS4wMi0uMDItLjAzLS4wMy0uMDMtLjUtLjM3LTEuMDEtLjczLTEuNTQtMS4wNEM3LjQ4LDE4Ni42OCwwLDE3My4yMywwLDE1OC4wM3YtLjFzMC0uMSwwLS4xYzAtMTIuNTYsNS4xMS0yMy45MiwxMy4zOC0zMi4xNiwxLjc0LTEuNzMsMy42MS0zLjMxLDUuNi00Ljc1LjUzLS4zMiwxLjA0LS42OCwxLjU0LTEuMDRsLjAzLS4wM2MuODctLjYzLDEuNjgtMS4zNSwyLjQ1LTIuMTEsNC4xMy00LjEsNi42OS05LjgsNi42OS0xNi4wN3MtMi41NS0xMS45Ny02LjY5LTE2LjA3Yy0uNzYtLjc2LTEuNTgtMS40OC0yLjQ1LTIuMTEtLjAxLS4wMi0uMDItLjAzLS4wMy0uMDMtLjUtLjM3LTEuMDEtLjczLTEuNTQtMS4wNEM3LjQ4LDc0LjE0LDAsNjAuNjgsMCw0NS40OGMwLTEyLjU2LDUuMTEtMjMuOTIsMTMuMzgtMzIuMTZDMjEuNjQsNS4wOSwzMy4wNSwwLDQ1LjY1LDBzMjQuMDEsNS4wOSwzMi4yNywxMy4zMmMxLjY0LDEuNjMsMy4xNSwzLjM5LDQuNTIsNS4yNS40OS44LDEuMDEsMS41NiwxLjYsMi4yOS41Ni43NCwxLjE5LDEuNDMsMS44MywyLjA5LDQuMTMsNC4xMSw5LjgzLDYuNjcsMTYuMTMsNi42N3MxMi0yLjU0LDE2LjEzLTYuNjdjLjc2LS43NSwxLjQ2LTEuNTYsMi4xMS0yLjQyLjAyLS4wMi4wMy0uMDMuMDQtLjA1LjM3LS41LjczLTEsMS4wNS0xLjUzLDEuNDQtMiwzLjA1LTMuODgsNC44LTUuNjJDMTM0LjM4LDUuMTEsMTQ1Ljc5LjAxLDE1OC4zOS4wMXMyNC4wMSw1LjA5LDMyLjI3LDEzLjMyYzguMjcsOC4yNCwxMy4zOCwxOS42MSwxMy4zOCwzMi4xNnMtNS4xMSwyMy45Mi0xMy4zOCwzMi4xNmMtMS42NCwxLjYzLTMuNDIsMy4xNS01LjMsNC41NC0uNzYuNDUtMS40OC45NC0yLjE4LDEuNDktLjc3LjU5LTEuNSwxLjIzLTIuMTksMS45Mi00LjEzLDQuMS02LjY5LDkuOC02LjY5LDE2LjA3LDAsNy4zMywzLjQ4LDEzLjg0LDguODgsMTcuOTkuNy41NSwxLjQyLDEuMDMsMi4xOCwxLjQ5LDEuODcsMS4zOCwzLjY2LDIuOSw1LjMsNC41NGwuMDItLjAzWiIvPgogIDxnPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzYyLjg3LDMxMC44NGMtNy4wOCwwLTEzLjA0LTIuMTUtMTcuODgtNi40Mi00Ljg1LTQuMjgtNy4yNi05Ljk2LTcuMjYtMTcuMDR2LTE0NS43OGMwLTExLjE3LTUuNTktMTYuNzYtMTYuNzYtMTYuNzZoLTI3LjM4Yy02LjcxLDAtMTIuMjEtMi4xNC0xNi40OC02LjQyLTQuMjktNC4yOC02LjQzLTkuNzgtNi40My0xNi40OHMyLjE0LTEyLjE5LDYuNDMtMTYuNDhjNC4yOC00LjI4LDkuNzgtNi40MiwxNi40OC02LjQyaDEzOC4wMWM3LjA3LDAsMTIuNzUsMi4xNSwxNy4wNCw2LjQyLDQuMjgsNC4yOSw2LjQzLDkuNzcsNi40MywxNi40OHMtMi4xNSwxMi4yLTYuNDMsMTYuNDhjLTQuMjksNC4yOS05Ljk3LDYuNDItMTcuMDQsNi40MmgtMjYuODJjLTExLjE4LDAtMTYuNzYsNS41OS0xNi43NiwxNi43NnYxNDUuNzhjMCw3LjA4LTIuMzMsMTIuNzYtNi45OCwxNy4wNC00LjY2LDQuMjgtMTAuNzEsNi40Mi0xOC4xNiw2LjQyWiIvPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTIxLjU0LDMwNS4yNWMtMTAuODEsMC0xOS41Ni0zLjM1LTI2LjI2LTEwLjA1LTYuNzEtNi43LTEwLjA2LTE1LjQ1LTEwLjA2LTI2LjI1VjExMy42NmMwLTEwLjgsMy4xNi0xOS4yNyw5LjUtMjUuNDEsNi4zMy02LjE0LDE0LjcxLTkuMjIsMjUuMTQtOS4yMmg4NC4zN2MxNS42NCwwLDIzLjQ3LDcuNDUsMjMuNDcsMjIuMzQsMCw2LjM0LTIuMjQsMTEuNjQtNi43MSwxNS45Mi00LjQ3LDQuMjktMTAuMDYsNi40Mi0xNi43Niw2LjQyaC01Ny41NWMtNy40NiwwLTExLjE3LDMuNzMtMTEuMTcsMTEuMTd2MjIuMzRjMCw3LjQ1LDMuNzIsMTEuMTcsMTEuMTcsMTEuMTdoNDkuMTdjNy40NSwwLDEzLjIyLDIuMDUsMTcuMzIsNi4xNCw0LjA5LDQuMSw2LjE1LDkuNSw2LjE1LDE2LjIsMCw1Ljk2LTIuMzMsMTEuMTctNi45OCwxNS42NC00LjY2LDQuNDctMTAuMTUsNi43LTE2LjQ4LDYuN2gtNDkuMTdjLTcuNDYsMC0xMS4xNywzLjczLTExLjE3LDExLjE3djI0LjU4YzAsNy40NSwzLjcyLDExLjE3LDExLjE3LDExLjE3aDYzLjE0YzcuMDcsMCwxMi43NSwyLjA1LDE3LjA0LDYuMTQsNC4yOCw0LjEsNi40Myw5LjY5LDYuNDMsMTYuNzYsMCw2LjM0LTIuMjQsMTEuNjQtNi43MSwxNS45Mi00LjQ3LDQuMjktMTAuMDYsNi40Mi0xNi43Niw2LjQyaC04OC4yOFoiLz4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTg0Ni4yOSwxMzQuMDVjLTkuMTMtMTYuOTQtMjIuMjYtMzAuMzUtMzkuMzktNDAuMjItMTcuMTQtOS44Ni0zOC0xNC44LTYyLjU4LTE0LjhoLTM3Ljg0Yy0xMC40NCwwLTE4LjgyLDMuMDctMjUuMTUsOS4yMi02LjM0LDYuMTQtOS41LDE0LjYxLTkuNSwyNS40MXYxNTUuODRjMCwxMC44LDMuNDQsMTkuNDYsMTAuMzQsMjUuOTcsNi44OSw2LjUyLDE2LjExLDkuNzgsMjcuNjYsOS43OGg0NC41NWMxOS43MywwLDM3LjYxLTQuNzUsNTMuNjMtMTQuMjUsMTYuMDItOS40OSwyOC42OC0yMi44LDM4LTM5LjkzLDkuMy0xNy4xMywxMy45Ny0zNi44NywxMy45Ny01OS4yMXMtNC41Ny00MC44Ni0xMy42OS01Ny44MVpNNzkzLjQ5LDI0Mi40MWMtMTEuMTgsMTIuMS0yNy4zOCwxOC4xNS00OC42MSwxOC4xNWgtOC43OWMtOS4zMiwwLTEzLjk3LTQuNjUtMTMuOTctMTMuOTZ2LTEwOC45MmMwLTkuMyw0LjY1LTEzLjk2LDEzLjk3LTEzLjk2aDguMjNjMjAuODYsMCwzNi44OCw1Ljc3LDQ4LjA1LDE3LjMxLDExLjE3LDExLjU1LDE2Ljk1LDI4LjQ5LDE3LjMyLDUwLjgzLjM3LDIxLjYtNS4wMywzOC40NS0xNi4yLDUwLjU1WiIvPgogICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNOTI2LjQ2LDMxMC44NGMtNy4wOCwwLTEzLjA0LTIuMjMtMTcuODgtNi43LTQuODUtNC40Ny03LjI2LTEwLjA1LTcuMjYtMTYuNzZWMTIzLjA4YzAtNy4wNywyLjQyLTEyLjg1LDcuMjYtMTcuMzIsNC44NC00LjQ3LDEwLjgtNi43LDE3Ljg4LTYuNyw3LjQ1LDAsMTMuNSwyLjIzLDE4LjE2LDYuNyw0LjY1LDQuNDcsNi45OCwxMC4yNSw2Ljk4LDE3LjMydjE2NC4zYzAsNy4wOC0yLjMzLDEyLjc2LTYuOTgsMTcuMDQtNC42Niw0LjI4LTEwLjcxLDYuNDItMTguMTYsNi40MloiLz4KICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTkyNi44MSw3MS4yMWMtNy44LDAtMTQuNDktMi41MS0yMC4wNi03LjUyLTUuNTctNS4wMS04LjM2LTExLjQyLTguMzYtMTkuMjIsMC03LjA1LDIuNzktMTMuMTgsOC4zNi0xOC4zOSw1LjU3LTUuMiwxMi4yNi03LjgsMjAuMDYtNy44czEzLjg0LDIuNiwxOS4yMyw3LjhjNS4zOCw1LjIxLDguMDgsMTEuMzMsOC4wOCwxOC4zOSwwLDcuOC0yLjcsMTQuMjEtOC4wOCwxOS4yMi01LjM5LDUuMDEtMTEuOCw3LjUyLTE5LjIzLDcuNTJaIi8+CiAgPC9nPgo8L3N2Zz4=" alt="TEDI" width="97" height="32" /></a>
+  </header>
+
+  <main class="tsb-main">
+    <nav class="tsb-breadcrumb" aria-label="Breadcrumb">
+      <a href="https://storybook.tedi.ee/">Library</a>
+      <span class="tsb-breadcrumb__sep" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="tsb-breadcrumb__current" data-tsb="framework-label">TEDI</span>
+    </nav>
+
+    <div class="tsb-stack tsb-stack--24">
+      <!-- Intro -->
+      <div class="tsb-stack tsb-stack--8">
+        <h1 class="tsb-h1" data-tsb="framework-label">TEDI</h1>
+        <p class="tsb-lead">Live Storybook builds for <span data-tsb="framework-label">TEDI</span>: the Main and RC releases, plus every branch still in development.</p>
+      </div>
+
+      <!-- Callout: how a component reaches you -->
+      <section class="tsb-callout tsb-stack tsb-stack--8">
+        <p class="tsb-lead"><b>Development cycle</b></p>
+        <div class="tsb-stepper">
+          <div class="tsb-step">
+            <span class="tsb-step__num">1</span>
+            <div>
+              <div class="tsb-step__title">In development</div>
+              <div class="tsb-step__sub">Features and fixes</div>
+            </div>
+          </div>
+          <span class="tsb-stepper__line" aria-hidden="true"></span>
+          <div class="tsb-step">
+            <span class="tsb-step__num">2</span>
+            <div>
+              <div class="tsb-step__title">Release candidate (RC)</div>
+              <div class="tsb-step__sub">Preview &ndash; ready to try</div>
+            </div>
+          </div>
+          <span class="tsb-stepper__line" aria-hidden="true"></span>
+          <div class="tsb-step tsb-step--grow">
+            <span class="tsb-step__num">3</span>
+            <div>
+              <div class="tsb-step__title">Main</div>
+              <div class="tsb-step__sub">Stable &ndash; released monthly, last Thursday</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main -->
+      <section class="tsb-stack tsb-stack--8">
+        <h2 class="tsb-h3">Main</h2>
+        <p class="tsb-lead">Everything here is final and won't change unexpectedly &mdash; the safe default to build against in production. It's updated every month on the last Thursday, when everything in RC is merged in.</p>
+        <p class="tsb-note"><b>PS:</b> the release day is subject to change (e.g. lands on a public holiday)</p>
+        <div id="tsb-main-card"></div>
+      </section>
+
+      <!-- Release candidate -->
+      <section class="tsb-stack tsb-stack--8">
+        <h2 class="tsb-h3">Release candidate</h2>
+        <p class="tsb-lead">Components are ready to use, but the API can still change before release. Ideal for trying new components early and sending feedback. Once a month, everything in RC graduates to Main.</p>
+        <div id="tsb-rc-card"></div>
+      </section>
+
+      <hr class="tsb-separator" />
+
+      <!-- In development -->
+      <section class="tsb-stack tsb-stack--8">
+        <h2 class="tsb-h3">In development</h2>
+        <p class="tsb-lead">Features and fixes still in progress. The number in each branch name matches its task on the <a href="https://github.com/orgs/TEDI-Design-System/projects/7/views/1" target="_blank" rel="noopener">GitHub</a> board, so you can follow the feature you're waiting for.</p>
+        <div id="tsb-dev-list" class="tsb-stack tsb-stack--8"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="tsb-footer">
+    <span>Maintained by <a href="https://www.tedi.ee/" target="_blank" rel="noopener">TEDI</a></span>
+  </footer>
+
+  <script type="text/javascript">
+    // --- SVG icons ------------------------------------------------------------
+    var ICON_ARROW =
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    function el(html) {
+      var t = document.createElement("template");
+      t.innerHTML = html.trim();
+      return t.content.firstChild;
+    }
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+
+    // Release/pre-release card (Main, RC): title + version tag + timestamp + status badge.
+    // The tag/meta spans are always rendered (hidden when empty) so the runtime npm
+    // fetch can fill or update them later.
+    function releaseCard(opts) {
+      var card = el(
+        '<a class="tsb-card" href="./' + esc(opts.branch) + '/">' +
+          '<span class="tsb-card__body">' +
+            '<span class="tsb-card__lead">' +
+              '<span class="tsb-card__title">' + esc(opts.title) + "</span>" +
+              '<span class="tsb-tag" hidden></span>' +
+            "</span>" +
+            '<span class="tsb-card__meta" hidden></span>' +
+            '<span class="tsb-badge tsb-badge--' + opts.badgeVariant + '">' + esc(opts.badgeLabel) + "</span>" +
+          "</span>" +
+          '<span class="tsb-card__arrow">' + ICON_ARROW + "</span>" +
+        "</a>"
+      );
+      setRelease(card, opts.version, opts.updated);
+      return card;
+    }
+
+    // Populate (or later refresh) a release card's version tag and "last update" text.
+    function setRelease(card, version, updated) {
+      if (!card) return;
+      var tag = card.querySelector(".tsb-tag");
+      var meta = card.querySelector(".tsb-card__meta");
+      if (tag) {
+        tag.hidden = !version;
+        if (version) tag.textContent = "ver " + version;
+      }
+      if (meta) {
+        meta.hidden = !updated;
+        if (updated) meta.textContent = "Last update: " + updated;
+      }
+    }
+
+    // Format an ISO date as DD.MM.YYYY HH:MM in Europe/Tallinn (mirrors pages-release-info.mjs).
+    function fmtDate(iso) {
+      if (!iso) return "";
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return "";
+      var p = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Tallinn",
+        day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit", hour12: false,
+      }).formatToParts(d).reduce(function (acc, part) { acc[part.type] = part.value; return acc; }, {});
+      return p.day + "." + p.month + "." + p.year + " " + p.hour + ":" + p.minute;
+    }
+
+    // Progressive enhancement: the injected Main/RC versions are captured when Pages
+    // deploys, which can race ahead of the release publishing to npm. Re-read the live
+    // dist-tags on load so the numbers are always current. Any failure keeps the
+    // build-time fallback, so the page never ends up blank.
+    function refreshVersionsFromNpm(pkg) {
+      if (!pkg || typeof fetch !== "function") return;
+      fetch("https://registry.npmjs.org/" + pkg, { headers: { Accept: "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (meta) {
+          if (!meta) return;
+          var tags = meta["dist-tags"] || {};
+          var times = meta.time || {};
+          if (tags.latest) {
+            setRelease(document.querySelector("#tsb-main-card .tsb-card"), tags.latest, fmtDate(times[tags.latest]));
+          }
+          if (tags.rc) {
+            setRelease(document.querySelector("#tsb-rc-card .tsb-card"), tags.rc, fmtDate(times[tags.rc]));
+          }
+        })
+        .catch(function () { /* keep build-time fallback */ });
+    }
+
+    // In-development card: branch name + "In progress" badge
+    // Badge derived from the branch prefix. Colours are provisional pending design sign-off.
+    function branchBadge(name) {
+      var n = String(name).toLowerCase();
+      if (n.indexOf("feat/") === 0 || n.indexOf("feature/") === 0) return { label: "Feature", variant: "brand" };
+      if (n.indexOf("fix/") === 0 || n.indexOf("bugfix/") === 0 || n.indexOf("hotfix/") === 0) return { label: "Bugfix", variant: "warning" };
+      return { label: "Other", variant: "neutral" };
+    }
+
+    function branchCard(name, updated) {
+      var meta = updated ? '<span class="tsb-card__meta">Last update: ' + esc(updated) + "</span>" : "";
+      var badge = branchBadge(name);
+      return el(
+        '<a class="tsb-card" href="./' + esc(name) + '/">' +
+          '<span class="tsb-card__body">' +
+            '<span class="tsb-card__title tsb-card__grow">' + esc(name) + "</span>" +
+            meta +
+            '<span class="tsb-badge tsb-badge--' + badge.variant + '">' + esc(badge.label) + "</span>" +
+          "</span>" +
+          '<span class="tsb-card__arrow">' + ICON_ARROW + "</span>" +
+        "</a>"
+      );
+    }
+
+    function renderTediPages(data) {
+      data = data || {};
+      var main = data.main || {};
+      var rc = data.rc || {};
+      var branches = data.branches || [];
+      var frameworkLabel = "TEDI" + (data.framework ? " " + data.framework : "");
+
+      document.title = frameworkLabel + " · Storybook";
+      Array.prototype.forEach.call(document.querySelectorAll('[data-tsb="framework-label"]'), function (n) {
+        n.textContent = frameworkLabel;
+      });
+
+      var mainRoot = document.getElementById("tsb-main-card");
+      if (mainRoot) {
+        mainRoot.appendChild(
+          releaseCard({
+            branch: "main", title: "Main", version: main.version, updated: main.updated,
+            badgeVariant: "success", badgeLabel: "Release",
+          })
+        );
+      }
+
+      var rcRoot = document.getElementById("tsb-rc-card");
+      if (rcRoot) {
+        rcRoot.appendChild(
+          releaseCard({
+            branch: "rc", title: "RC", version: rc.version, updated: rc.updated,
+            badgeVariant: "brand", badgeLabel: "Pre-release",
+          })
+        );
+      }
+
+      var devRoot = document.getElementById("tsb-dev-list");
+      if (devRoot) {
+        var updatedMap = data.branchUpdated || {};
+        var dev = branches.filter(function (b) { return b !== "main" && b !== "rc"; });
+        if (dev.length === 0) {
+          devRoot.appendChild(el('<p class="tsb-empty">No feature or fix branches are currently in development.</p>'));
+        } else {
+          dev.forEach(function (name) { devRoot.appendChild(branchCard(name, updatedMap[name])); });
+        }
+      }
+
+      // Override the build-time Main/RC versions with live npm data when reachable.
+      refreshVersionsFromNpm(data.npmPackage);
+    }
+
+    // Data is injected between this file and index_suffix.html at deploy time.
+    window.__TEDI_PAGES__ =
