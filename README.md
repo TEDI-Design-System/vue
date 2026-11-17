@@ -40,6 +40,8 @@ Requires Node 24 and npm 11 (see `.nvmrc`).
 npm install
 npm run build      # library build into dist/
 npm run typecheck  # vue-tsc --noEmit
+npm test           # Vitest unit tests
+npm run test:coverage  # tests with the 80% coverage threshold
 ```
 
 ## License
