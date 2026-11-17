@@ -24,3 +24,4 @@ junit.xml
 
 # Storybook
 *storybook.log
+/storybook-static
