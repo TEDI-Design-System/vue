@@ -33,7 +33,8 @@
     "lint:ci": "stylelint \"src/**/*.{scss,vue}\" --allow-empty-input --quiet && eslint . --quiet",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:ssr": "node scripts/ssr-smoke.mjs"
   },
   "repository": {
     "type": "git",

@@ -27,3 +27,9 @@ junit.xml
 
 # Claude Code agent worktrees
 /.claude/worktrees/
+
+# Nuxt SSR smoke test fixture
+/tests/nuxt-ssr/node_modules/
+/tests/nuxt-ssr/package-lock.json
+/tests/nuxt-ssr/.nuxt/
+/tests/nuxt-ssr/.output/
