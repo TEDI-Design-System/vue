@@ -54,7 +54,7 @@ In short (the full conventions are in [AGENTS.md](AGENTS.md)):
 
 - Single-file components with `<script setup lang="ts">` and typed `defineProps`, `defineEmits` and `defineModel`.
 - Components are named `TediName` and exported by name, never as a default export.
-- Styles are global SCSS with BEM `tedi-` classes in the component's `name.scss`, registered in `src/tedi/styles/index.scss`. No `<style scoped>`. Colours and spacing come from `@tedi-design-system/core` tokens.
+- Styles are global SCSS with BEM `tedi-` classes in the component's `name.scss`, imported by the component's `.vue` file. No `<style scoped>`. Colours and spacing come from `@tedi-design-system/core` tokens.
 - Components must render on the server: browser APIs only in `onMounted` or event handlers.
 - Every component has unit tests (`TediName.spec.ts`) and stories (`TediName.stories.ts`). Match the API and behaviour of the React and Angular implementations.
 
@@ -64,7 +64,7 @@ TEDI targets WCAG 2.2 level AA. Storybook runs axe on every story (the Accessibi
 
 ## CI and releases
 
-Every pull request to `rc` or `main` runs lint, typecheck, the library build, the Nuxt SSR smoke test and the tests with coverage (reported to Codecov). Run `npm run lint`, `npm run typecheck` and `npm test` locally before opening a pull request. Automated releases and Chromatic visual tests are not set up yet.
+Every pull request to `rc` or `main` runs lint, typecheck, the library build, the Nuxt SSR smoke test and the tests with coverage (reported to Codecov). Run `npm run lint`, `npm run typecheck` and `npm test` locally before opening a pull request. Chromatic visual tests run once a pull request is approved (and on every push to `rc`), and comment the result on the pull request. Automated releases are not set up yet.
 
 ## AI tooling
 

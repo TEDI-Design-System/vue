@@ -47,6 +47,8 @@ index.ts
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import './name.scss';
+
 export interface TediNameProps {
   /**
    * Visual variant.
@@ -83,7 +85,8 @@ const classes = computed(() => ['tedi-name', `tedi-name--${variant}`, { 'tedi-na
 
 Rules:
 
-- `<script setup lang="ts">`, type-based macros, no `<style>` block.
+- `<script setup lang="ts">`, type-based macros, no `<style>` block; the stylesheet is imported with
+  `import './name.scss';`.
 - Props destructured with defaults; never assign to props, emit or use `defineModel` instead.
 - Root class `tedi-name`, modifiers `tedi-name--<value>`, elements `tedi-name__<part>`.
 - Browser APIs only in `onMounted` / event handlers. Remove listeners in `onBeforeUnmount`. Ids from
@@ -105,11 +108,15 @@ Rules:
 }
 ```
 
-Register it in `src/tedi/styles/index.scss`, after the core import:
+Import it from the SFC, after the other imports in `<script setup>`:
 
-```scss
-@use '../components/<category>/<name>/name';
+```ts
+import './name.scss';
 ```
+
+Do not `@use` it from `src/tedi/styles/index.scss`: the library build collects the import into
+`dist/index.css` either way, but Chromatic's TurboSnap only sees module imports, so a stylesheet pulled in
+with Sass `@use` would never re-snapshot the stories that use the component.
 
 ## Step 5: Export
 

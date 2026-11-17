@@ -33,11 +33,12 @@ jobs:
   # the head, there is nothing new to see. A push after the approval moves the
   # head, so re-approving does rebuild.
   #
-  # A change under `.storybook/`, to any `.scss` file (`externals` in
-  # chromatic.config.json: component styles reach the preview through Sass
-  # `@use`, which TurboSnap cannot trace), or to a `vue`, `vite`, `@storybook/`
-  # or core version makes Chromatic snapshot every story, and the `rc` build after
-  # the merge has to do the same full build again. So such a PR gets no approval
+  # A change under `.storybook/`, to the global stylesheets under `src/*/styles/`
+  # (imported by the preview; `externals` in chromatic.config.json), or to a
+  # `vue`, `vite`, `@storybook/` or core version makes Chromatic snapshot every
+  # story, and the `rc` build after the merge has to do the same full build again.
+  # Component stylesheets don't: each SFC imports its own `name.scss`, so
+  # TurboSnap traces a style change to the stories that use the component. So such a PR gets no approval
   # build: the `rc` build is the one full build, and it comments on the merged PR
   # if it finds visual changes. Run the workflow by hand to see the diff first.
   guard:
@@ -94,7 +95,7 @@ jobs:
             });
             const forcesFullBuild = (f) =>
               f.filename.startsWith('.storybook/') ||
-              f.filename.endsWith('.scss') ||
+              /^src\/[^/]+\/styles\//.test(f.filename) ||
               (f.filename === 'package.json' &&
                 /^[-+]\s*"(vue|vite|@vitejs\/|@storybook\/|storybook|@tedi-design-system\/core)"/m.test(f.patch ?? ''));
             const config = files.filter(forcesFullBuild).map((f) => f.filename);
