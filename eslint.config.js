@@ -20,6 +20,8 @@ export default defineConfigWithVueTs(
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
+      // Optional props typed via defineProps<T>() are undefined when omitted; no placeholder defaults needed.
+      'vue/require-default-prop': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
