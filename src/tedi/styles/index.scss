@@ -1,3 +1,5 @@
 // Icon fonts are not bundled here: the build appends them to index.css and ships per-style
 // entries under icons/, so consumers can load a single Material Symbols style.
 @use '@tedi-design-system/core/index-without-icons';
+
+@use '../components/base/icon/icon';

@@ -27,11 +27,13 @@ export default defineConfigWithVueTs(
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
+      // Optional props typed via defineProps<T>() are undefined when omitted; no placeholder defaults needed.
+      'vue/require-default-prop': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
   {
-    files: ['*.config.{js,ts}', 'scripts/**/*.{js,mjs}', 'tests/nuxt-ssr/*.config.ts'],
+    files: ['*.config.{js,ts}', '.github/**/*.mjs', 'scripts/**/*.{js,mjs}', 'tests/nuxt-ssr/*.config.ts'],
     languageOptions: {
       globals: globals.node,
     },

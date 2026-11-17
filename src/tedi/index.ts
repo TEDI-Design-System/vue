@@ -1,3 +1,3 @@
 import './styles/index.scss';
 
-export {};
+export * from './components/base/icon';

@@ -4,4 +4,7 @@
 /coverage
 /node_modules
 CHANGELOG.md
+# Pages landing page halves, concatenated around injected JSON at deploy time (kept identical to react/angular)
+.github/workflows/index.html
+.github/workflows/index_suffix.html
 package-lock.json
