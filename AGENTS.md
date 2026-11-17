@@ -47,8 +47,8 @@ Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test
 - `src/tedi/components/<category>/<name>/`: TEDI-Ready components. Categories mirror react: `base`,
   `buttons`, `content`, `filter`, `form`, `layout`, `loaders`, `misc`, `navigation`, `notifications`,
   `overlays`, `tags`.
-- `src/tedi/styles/index.scss`: the global stylesheet. Loads core's `index-without-icons` and `@use`s
-  every component stylesheet.
+- `src/tedi/styles/index.scss`: the global stylesheet. Loads core's `index-without-icons`; component
+  stylesheets are imported by their components.
 - `src/tedi/index.ts`, `src/community/index.ts`: entry point barrels.
 - `src/community/`: Community components (separate entry point).
 - `src/docs/`: Storybook MDX documentation pages.
@@ -60,7 +60,7 @@ Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test
 
 ```text
 TediName.vue        # SFC: <template> + <script setup lang="ts">, no <style> block
-name.scss           # Global BEM styles, @use'd from src/tedi/styles/index.scss
+name.scss           # Global BEM styles, imported by TediName.vue
 TediName.spec.ts    # Vitest + Vue Test Utils
 TediName.stories.ts # Storybook stories (CSF 3)
 index.ts            # Named re-exports of the component and its public types
@@ -96,9 +96,10 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 
 ## Styling
 
-- Global SCSS, never `<style scoped>` or a `<style>` block in the SFC. Each component stylesheet is
-  `@use`d from `src/tedi/styles/index.scss` so it lands in `dist/index.css`; do not import it from the
-  component or its `index.ts`.
+- Global SCSS, never `<style scoped>` or a `<style>` block in the SFC. The SFC imports its own
+  stylesheet (`import './name.scss';` in `<script setup>`). The library build collects it into
+  `dist/index.css`, and Chromatic's TurboSnap can trace a style change to the stories that use the
+  component (a Sass `@use` is invisible to it).
 - BEM with `tedi-` prefix: `.tedi-name`, `.tedi-name__element`, `.tedi-name--modifier`. Stylelint
   enforces the pattern.
 - Design tokens only, from `@tedi-design-system/core` (6.13.0). Stylelint rejects raw colour values.
@@ -138,7 +139,9 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 - `rc`: pre-releases (base branch for PRs)
 
 PRs to `rc` and `main` run `.github/workflows/vue-test-and-lint.yml`: `lint:ci` + `typecheck`, `build`, `test:ssr` and
-`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`). Chromatic is not set up yet.
+`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`). Chromatic (`.github/workflows/vue-chromatic.yml`,
+`chromatic.config.json`) builds once per PR on approval and on every push to `rc` / `main`, with TurboSnap; react,
+angular and vue share one snapshot quota.
 
 Pushes to `rc` and `main` run `.github/workflows/vue-release.yml`: lint, typecheck and tests, then `npm run build` and
 semantic-release (`release.config.mjs`), which publishes `dist/` to npm (trusted publishing, falling back to the `NPMJS_TEDI_AUTH_TOKEN` org secret) as `vue-<version>` tags
@@ -149,7 +152,7 @@ minor, `fix`/`perf` a patch, `BREAKING CHANGE:` a major. Never edit `version` in
 ## Do NOT
 
 - Use `<style scoped>`, CSS modules or a `<style>` block in an SFC: write global BEM SCSS in `name.scss`
-- Import a component's SCSS from the component or its `index.ts`: `@use` it from `src/tedi/styles/index.scss`
+- `@use` a component stylesheet from `src/tedi/styles/index.scss`: import it from the component's SFC
 - Hardcode colour values: always use `@tedi-design-system/core` tokens
 - Use fallback values in CSS `var()`: write `var(--token-name)`, not `var(--token-name, fallback)`
 - Use the Options API, `defineComponent` or runtime-only `defineProps({...})` declarations in library code

@@ -33,7 +33,7 @@ export default defineConfigWithVueTs(
     },
   },
   {
-    files: ['*.config.{js,ts}', '.github/**/*.mjs', 'scripts/**/*.{js,mjs}', 'tests/nuxt-ssr/*.config.ts'],
+    files: ['*.config.{js,ts}', '.github/**/*.{mjs,cjs}', 'scripts/**/*.{js,mjs}', 'tests/nuxt-ssr/*.config.ts'],
     languageOptions: {
       globals: globals.node,
     },
