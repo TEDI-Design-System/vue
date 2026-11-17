@@ -178,7 +178,7 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 - Conventional commits enforced by commitlint:
   [commit convention](https://github.com/TEDI-Design-System/general/wiki/Commit-convention).
 - Format `type(scope): Subject #issue`, e.g. `feat(icon): Add TediIcon Component #15`.
-- Issue reference required, subject at least 10 characters, Start Case subject (warning).
+- Issue reference required, subject at least 10 characters. Subject case is not checked.
 - The pre-commit hook runs lint-staged (Stylelint, ESLint, Prettier on staged files).
 
 ## Related Repositories
