@@ -21,3 +21,6 @@ Thumbs.db
 # test output
 /coverage
 junit.xml
+
+# Storybook
+*storybook.log
