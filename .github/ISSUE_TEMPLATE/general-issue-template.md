@@ -4,7 +4,6 @@ about: Issue template for general issues
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 ## Problem
