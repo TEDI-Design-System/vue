@@ -25,7 +25,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "start": "storybook dev -p 4400 -c .storybook",
+    "start": "storybook dev -p 4500 -c .storybook",
     "build": "rm -rf dist && vite build --config vite.lib.config.ts",
     "build:sb": "storybook build -c .storybook -o dist/storybook-static",
     "typecheck": "vue-tsc --noEmit -p tsconfig.lib.json && vue-tsc --noEmit -p tsconfig.node.json && vue-tsc --noEmit -p tsconfig.spec.json && vue-tsc --noEmit -p .storybook/tsconfig.json",
