@@ -2,7 +2,7 @@
 
 `@tedi-design-system/vue` is a library of Vue 3 components implementing the TEDI Design System.
 
-> The library is in early development and does not ship components yet.
+> The library is in early development: it ships a first set of components, and more arrive with each release.
 
 ## Getting Started
 
@@ -28,9 +28,17 @@ To load only one Material Symbols style, use `index-without-icons.css` together 
 
 TEDI-Ready components are exported from `@tedi-design-system/vue/tedi`, community components from `@tedi-design-system/vue/community`.
 
-```ts
-import {} from /* components */ '@tedi-design-system/vue/tedi';
+```vue
+<script setup lang="ts">
+import { TediIcon } from '@tedi-design-system/vue/tedi';
+</script>
+
+<template>
+  <TediIcon name="home" />
+</template>
 ```
+
+Theming, Nuxt setup and icon fonts are covered in the [Get started](https://storybook.tedi.ee/vue/rc/?path=/docs/documentation-get-started--get-started) page in Storybook.
 
 ## Development
 
