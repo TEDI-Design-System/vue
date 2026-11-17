@@ -24,7 +24,7 @@ export default defineConfigWithVueTs(
     },
   },
   {
-    files: ['*.config.{js,ts}'],
+    files: ['*.config.{js,ts}', '.github/**/*.mjs'],
     languageOptions: {
       globals: globals.node,
     },
