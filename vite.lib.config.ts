@@ -7,7 +7,9 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import packageJson from './package.json' with { type: 'json' };
 import baseConfig from './vite.config';
 
-const externalDependencies = Object.keys(packageJson.peerDependencies);
+// Runtime dependencies (reka-ui, @floating-ui/vue, ...) stay external like the peers, so consumers share one
+// copy and their bundler tree-shakes it, instead of a copy being bundled into dist/.
+const externalDependencies = [...Object.keys(packageJson.peerDependencies), ...Object.keys(packageJson.dependencies)];
 
 const coreDir = './node_modules/@tedi-design-system/core';
 const dist = (file: string) => resolve(import.meta.dirname, 'dist', file);

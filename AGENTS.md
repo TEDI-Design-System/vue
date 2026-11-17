@@ -79,6 +79,27 @@ index.ts            # Named re-exports of the component and its public types
 - SSR safe: no `window`, `document` or other browser APIs at module top level or during setup. Touch
   them in `onMounted` (and clean up in `onBeforeUnmount`). Generate DOM ids with `useId()`.
 
+### Floating and Overlay Components
+
+Decided in #28: anything that floats or layers (Modal, Sheet, Popover, Tooltip, Dropdown, Select,
+Toast, mobile navigation) is built on **Reka UI** (`reka-ui`) primitives. Use **`@floating-ui/vue`**
+only where no Reka UI primitive fits, and only for positioning: it has no focus management,
+dismissal or ARIA wiring (unlike react's `@floating-ui/react`), so those would have to be written.
+
+- Reka UI is headless: style its parts with TEDI BEM classes and core tokens. Use `as-child` to put
+  its behaviour on a TEDI component (e.g. `TediButton` as a trigger) instead of an extra element.
+- Keep Reka UI's accessibility behaviour (focus trap and return, Escape and outside click, ARIA
+  roles). Adjust it through its props and events; don't re-implement it.
+- Positioned content (popover, tooltip, dropdown, select) gets a Reka UI wrapper with inline position
+  styles: style the inner content element, not the wrapper.
+- Portalled content renders on the client after hydration; triggers server-render with their ARIA
+  attributes.
+- Reka UI also has primitives for non-floating components (Accordion, Tabs, Checkbox, RadioGroup,
+  Switch, Slider, Pagination, Stepper). Use one when its behaviour matches the TEDI design; it is a
+  bonus, not a requirement.
+- Both are runtime `dependencies` and external in the library build: import from `reka-ui` /
+  `@floating-ui/vue` directly, never copy their code.
+
 ### Export Chain
 
 `src/tedi/index.ts` → component `index.ts` → `TediName.vue`. Named exports only:
