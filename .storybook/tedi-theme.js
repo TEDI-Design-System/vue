@@ -7,7 +7,8 @@ export default create({
   brandImage: 'TEDI-logo-valge.svg',
   brandTarget: '_self',
 
-  appBg: '#004882',
+  // TEDI green-700: tells the Vue Storybook apart from react (blue) and angular (light) at a glance.
+  appBg: '#266b42',
   colorPrimary: '#ff8000',
   colorSecondary: '#ffffff80',
 
