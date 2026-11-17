@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node", "vite/client"],
+    "composite": true,
+    "allowJs": true,
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.storybook.tsbuildinfo"
+  },
+  "include": ["./*.ts", "./*.js", "../src/**/*.stories.ts", "../src/**/*.ts", "../src/**/*.vue"],
+  "exclude": ["../src/**/*.spec.ts"]
+}
