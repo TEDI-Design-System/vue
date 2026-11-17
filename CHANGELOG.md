@@ -1,3 +1,10 @@
+# [1.0.0-rc.3](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.2...vue-1.0.0-rc.3) (2026-11-17)
+
+
+### Bug Fixes
+
+* **storybook:** Pin Storybook 10.5.10 Like React And Angular [#4](https://github.com/TEDI-Design-System/vue/issues/4) ([#104](https://github.com/TEDI-Design-System/vue/issues/104)) ([f836526](https://github.com/TEDI-Design-System/vue/commit/f836526718bef85146bc86fcc6a9070c11c208a1))
+
 # [1.0.0-rc.2](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.1...vue-1.0.0-rc.2) (2026-11-17)
 
 
