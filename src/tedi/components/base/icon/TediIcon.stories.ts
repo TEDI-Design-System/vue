@@ -14,7 +14,7 @@ import TediIcon, { type TediIconColor, type TediIconProps, type TediIconSize } f
  * `index.css`.
  */
 const meta = {
-  title: 'Tedi-Ready/Base/Icon',
+  title: 'TEDI-Ready/Base/Icon',
   component: TediIcon,
   parameters: {
     design: {

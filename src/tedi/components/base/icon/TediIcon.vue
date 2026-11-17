@@ -66,38 +66,37 @@ export interface TediIconProps {
 
 defineOptions({ name: 'TediIcon' });
 
-const props = withDefaults(defineProps<TediIconProps>(), {
-  type: 'outlined',
-  size: 24,
-  filled: false,
-  color: 'primary',
-  label: undefined,
-  background: undefined,
-  display: 'block',
-});
+const {
+  name,
+  type = 'outlined',
+  size = 24,
+  filled = false,
+  color = 'primary',
+  label,
+  background,
+  display = 'block',
+} = defineProps<TediIconProps>();
 
 const wrapperClasses = computed(() => [
   'tedi-icon__wrapper',
   'tedi-icon__wrapper--bg',
-  `tedi-icon__wrapper--bg-${props.background}`,
-  `tedi-icon__wrapper--size-${props.size}`,
+  `tedi-icon__wrapper--bg-${background}`,
+  `tedi-icon__wrapper--size-${size}`,
   'tedi-icon__wrapper--block',
 ]);
 
 const iconClasses = computed(() => [
   'notranslate',
   'material-symbols',
-  `material-symbols--${props.type}`,
+  `material-symbols--${type}`,
   'tedi-icon',
-  `tedi-icon--color-${props.color}`,
-  `tedi-icon--size-${props.size}`,
-  `tedi-icon--${props.background ? 'block' : props.display}`,
-  { 'tedi-icon--filled': props.filled },
+  `tedi-icon--color-${color}`,
+  `tedi-icon--size-${size}`,
+  `tedi-icon--${background ? 'block' : display}`,
+  { 'tedi-icon--filled': filled },
 ]);
 
-const a11yAttrs = computed(() =>
-  props.label ? { role: 'img', 'aria-label': props.label } : { 'aria-hidden': 'true' as const },
-);
+const a11yAttrs = computed(() => (label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' as const }));
 </script>
 
 <template>
