@@ -1,11 +1,11 @@
-import vue from '@vitejs/plugin-vue';
 import { appendFileSync, copyFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, mergeConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 import packageJson from './package.json' with { type: 'json' };
+import baseConfig from './vite.config';
 
 const externalDependencies = Object.keys(packageJson.peerDependencies);
 
@@ -32,10 +32,9 @@ const tediStylesheets = (): Plugin => ({
   },
 });
 
-export default defineConfig({
+const libConfig = defineConfig({
   mode: 'production',
   plugins: [
-    vue(),
     dts({
       processor: 'vue',
       tsconfigPath: './tsconfig.lib.json',
@@ -74,3 +73,5 @@ export default defineConfig({
     },
   },
 });
+
+export default mergeConfig(baseConfig, libConfig);
