@@ -32,6 +32,18 @@ const tediStylesheets = (): Plugin => ({
   },
 });
 
+/**
+ * dist/package.json is what semantic-release publishes (pkgRoot: dist). Drop the repo-only fields so
+ * `npm publish` from dist/ runs no lifecycle scripts (prepare would call husky) and consumers do not
+ * see the dev tooling. `engines` (Node 24 / npm 11) is the contributor toolchain, not a consumer
+ * requirement: Yarn 1 would refuse to install the package on an older Node.
+ */
+const repoOnlyFields = new Set(['scripts', 'devDependencies', 'commitlint', 'lint-staged', 'engines']);
+const publishedPackageJson = (content: string) => {
+  const published = Object.entries(JSON.parse(content)).filter(([key]) => !repoOnlyFields.has(key));
+  return `${JSON.stringify(Object.fromEntries(published), null, 2)}\n`;
+};
+
 const libConfig = defineConfig({
   mode: 'production',
   plugins: [
@@ -43,7 +55,8 @@ const libConfig = defineConfig({
     }),
     viteStaticCopy({
       targets: [
-        { src: ['package.json', 'README.md', 'LICENSE'], dest: './' },
+        { src: 'package.json', dest: './', transform: publishedPackageJson },
+        { src: ['README.md', 'LICENSE'], dest: './' },
         { src: `${coreDir}/fonts/*`, dest: './fonts', rename: { stripBase: true } },
         { src: `${coreDir}/icons/*.css`, dest: './icons', rename: { stripBase: true } },
       ],
