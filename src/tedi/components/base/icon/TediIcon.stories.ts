@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import TediIcon, { type TediIconColor, type TediIconProps, type TediIconSize } from './TediIcon.vue';
 
 /**
- * <a href="https://www.figma.com/file/jWiRIXhHRxwVdMSimKX2FF/TEDI-Design-System-(draft)?type=design&node-id=45-30752&mode=dev" target="_blank">Figma ↗</a><br/>
+ * <a href="https://www.figma.com/design/jWiRIXhHRxwVdMSimKX2FF/TEDI-READY?node-id=45-30752&m=dev" target="_blank">Figma ↗</a><br/>
  * <a href="https://www.tedi.ee/1ee8444b7/p/28835d-icon" target="_blank">Zeroheight ↗</a><hr/>
  * <a href="https://fonts.google.com/icons?icon.set=Material+Icons" target="_blank">Official Google Material Icons homepage icons ↗</a><br/>
  * <a href="https://www.figma.com/community/file/1014241558898418245/material-design-icons?searchSessionId=lvxhc4l5-a6" target="_blank">Material Icons Figma ↗</a><br/>
@@ -19,7 +19,7 @@ const meta = {
   parameters: {
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/file/jWiRIXhHRxwVdMSimKX2FF/TEDI-Design-System-(draft)?type=design&node-id=45-30752&mode=dev',
+      url: 'https://www.figma.com/design/jWiRIXhHRxwVdMSimKX2FF/TEDI-READY?node-id=45-30752&m=dev',
     },
   },
   args: {
