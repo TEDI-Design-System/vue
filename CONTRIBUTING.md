@@ -35,6 +35,7 @@ npm run test           # Vitest
 npm run test:coverage  # Vitest with coverage (80% threshold)
 npm run build          # library build into dist/
 npm run build:sb       # static Storybook into dist/storybook-static
+npm run test:ssr       # Nuxt SSR smoke test of the packed library (after npm run build)
 ```
 
 On Windows, enable symlinks before cloning. `.claude/skills/` links to `.agents/skills/`, and without symlinks Claude Code doesn't find the repository's skills. Turn on Developer Mode, then:
@@ -63,7 +64,7 @@ TEDI targets WCAG 2.2 level AA. Storybook runs axe on every story (the Accessibi
 
 ## CI and releases
 
-CI workflows, automated releases and Chromatic visual tests are not set up yet. Until they are, run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` locally before opening a pull request.
+Every pull request to `rc` or `main` runs lint, typecheck, the library build, the Nuxt SSR smoke test and the tests with coverage (reported to Codecov). Run `npm run lint`, `npm run typecheck` and `npm test` locally before opening a pull request. Automated releases and Chromatic visual tests are not set up yet.
 
 ## AI tooling
 
