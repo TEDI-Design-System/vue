@@ -13,6 +13,7 @@ export default defineConfigWithVueTs(
     'storybook-static/**',
     'tests/nuxt-ssr/.nuxt/**',
     'tests/nuxt-ssr/.output/**',
+    '.claude/worktrees/**',
   ]),
   {
     files: ['**/*.{js,ts,vue}'],
