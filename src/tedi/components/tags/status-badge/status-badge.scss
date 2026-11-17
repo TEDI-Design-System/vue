@@ -24,8 +24,6 @@ $badge-variants: ('filled', 'filled-bordered', 'bordered');
     padding-left: var(--tag-default-padding-x);
   }
 
-  // Icon-only badges use the dedicated status icon padding (as angular), giving a 24px square around
-  // the 16px icon. Declared before --large so a large badge keeps its own padding.
   &__icon-only {
     display: inline-flex;
     align-items: center;
