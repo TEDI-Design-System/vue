@@ -1,0 +1,27 @@
+@use '@tedi-design-system/core/mixins';
+
+.tedi-feedback-text {
+  font-size: var(--body-small-regular-size);
+  line-height: var(--body-small-regular-line-height);
+  color: var(--general-text-tertiary);
+
+  &--valid {
+    color: var(--form-general-feedback-success-text);
+  }
+
+  &--error {
+    color: var(--form-general-feedback-error-text);
+  }
+
+  &--left {
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  &--right {
+    flex-grow: 0;
+    text-align: right;
+  }
+
+  @include mixins.print-grayscale;
+}

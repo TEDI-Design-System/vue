@@ -1,5 +1,6 @@
 import './styles/index.scss';
 
 export * from './components/base/icon';
+export * from './components/form/feedback-text';
 export * from './components/tags/status-badge';
 export * from './components/tags/status-indicator';
