@@ -40,6 +40,22 @@ import { TediIcon } from '@tedi-design-system/vue/tedi';
 
 Theming, Nuxt setup and icon fonts are covered in the [Get started](https://storybook.tedi.ee/vue/rc/?path=/docs/documentation-get-started--get-started) page in Storybook.
 
+## AI Tooling
+
+### For consumers: the `tedi-vue` skill
+
+Helps AI coding agents build UIs with `@tedi-design-system/vue`. It lives in [`skills/tedi-vue`](./skills/tedi-vue) and teaches an agent the import paths and setup (Vue and Nuxt), how to read components, props, slots and events from the **installed package**, the library's API conventions (slots, `v-model`, compound components, `as` / `as-child`), theming with design tokens from `@tedi-design-system/core`, and the common pitfalls.
+
+Install it into your agent (Claude Code, Cursor, Codex and others) with the [`skills`](https://www.skills.sh) CLI, from your project root:
+
+```bash
+npx skills add https://github.com/TEDI-Design-System/vue --skill tedi-vue
+```
+
+### For contributors: the `contributing` skill
+
+Guides development inside this repository: creating components, tests, accessibility audits and Storybook stories. Available as `/contributing` when working in this repository. See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Development
 
 Requires Node 24 and npm 11 (see `.nvmrc`).
