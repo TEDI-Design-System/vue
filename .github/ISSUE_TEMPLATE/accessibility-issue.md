@@ -1,10 +1,9 @@
 ---
 name: Accessibility issue
 about: A component is hard or impossible to use with a keyboard, screen reader, zoom or other assistive technology
-title: "[Component_name]:"
+title: '[Component_name]:'
 labels: wcag
 assignees: ''
-
 ---
 
 ## Problem
