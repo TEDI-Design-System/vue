@@ -1,3 +1,10 @@
+# [1.0.0-rc.2](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.1...vue-1.0.0-rc.2) (2026-11-17)
+
+
+### Features
+
+* **status-indicator:** Add StatusIndicator Component [#26](https://github.com/TEDI-Design-System/vue/issues/26) ([#27](https://github.com/TEDI-Design-System/vue/issues/27)) ([6a4ae26](https://github.com/TEDI-Design-System/vue/commit/6a4ae26045543fbdd46421b58400333c2f272ac2))
+
 # 1.0.0-rc.1 (2026-11-17)
 
 
