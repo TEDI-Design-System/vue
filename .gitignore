@@ -1,0 +1,19 @@
+# dependencies
+node_modules
+
+# build output
+/dist
+*.tsbuildinfo
+
+# logs
+npm-debug.log*
+
+# IDEs and editors
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# System files
+.DS_Store
+Thumbs.db

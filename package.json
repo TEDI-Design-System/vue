@@ -1,0 +1,58 @@
+{
+  "name": "@tedi-design-system/vue",
+  "version": "0.0.0-semantic-version",
+  "license": "MIT",
+  "description": "TEDI Design System Vue component library: accessible, reusable UI components.",
+  "type": "module",
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "exports": {
+    "./tedi": {
+      "types": "./src/tedi/index.d.ts",
+      "import": "./tedi.es.js",
+      "require": "./tedi.cjs"
+    },
+    "./community": {
+      "types": "./src/community/index.d.ts",
+      "import": "./community.es.js",
+      "require": "./community.cjs"
+    },
+    "./index.css": "./index.css",
+    "./index-without-icons.css": "./index-without-icons.css",
+    "./icons/*.css": "./icons/*.css"
+  },
+  "scripts": {
+    "build": "rm -rf dist && vite build --config vite.lib.config.ts",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.lib.json && vue-tsc --noEmit -p tsconfig.node.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TEDI-Design-System/vue.git"
+  },
+  "engines": {
+    "npm": ">=11.0.0",
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "@tedi-design-system/core": "6.13.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^6.0.11",
+    "sass": "^1.108.2",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.8",
+    "vite-plugin-dts": "^5.1.2",
+    "vite-plugin-static-copy": "^4.1.1",
+    "vue": "^3.5.45",
+    "vue-tsc": "^3.3.14"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
