@@ -27,7 +27,7 @@
     "prepare": "husky",
     "start": "storybook dev -p 4500 -c .storybook",
     "build": "rm -rf dist && vite build --config vite.lib.config.ts",
-    "build:sb": "storybook build -c .storybook -o storybook-static",
+    "build:sb": "storybook build -c .storybook -o dist/storybook-static",
     "typecheck": "vue-tsc --noEmit -p tsconfig.lib.json && vue-tsc --noEmit -p tsconfig.node.json && vue-tsc --noEmit -p tsconfig.spec.json && vue-tsc --noEmit -p .storybook/tsconfig.json",
     "lint": "stylelint \"src/**/*.{scss,vue}\" --allow-empty-input --fix && eslint . --fix",
     "lint:ci": "stylelint \"src/**/*.{scss,vue}\" --allow-empty-input --quiet && eslint . --quiet",
