@@ -46,9 +46,11 @@ jobs:
         run: npm test
 
   # Builds the library into dist/ and lets semantic-release version, tag and publish it from there
-  # (pkgRoot: dist). npm auth is trusted publishing (OIDC, hence id-token: write), the same as
-  # react and angular: no npm token secret is involved. Storybook is never built here, because
-  # build:sb writes into dist/ and would end up in the published package.
+  # (pkgRoot: dist). @semantic-release/npm tries trusted publishing (OIDC, hence id-token: write)
+  # first and falls back to NPM_TOKEN. The token covers the first publish: npm only accepts a trusted
+  # publisher on a package that already exists. Once one is configured for vue-release.yml, OIDC
+  # takes over without a change here. Storybook is never built here, because build:sb writes into
+  # dist/ and would end up in the published package.
   build-and-deploy:
     needs: [lint, test]
     runs-on: ubuntu-latest
@@ -75,6 +77,7 @@ jobs:
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPMJS_TEDI_AUTH_TOKEN }}
 
   # A release from main commits the changelog and tags main; merging main back keeps rc ahead of it,
   # so the next rc prerelease is computed from the latest stable release.
