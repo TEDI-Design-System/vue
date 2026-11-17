@@ -36,6 +36,7 @@ npm run lint:ci            # Same without --fix, errors only
 npm run build              # Library build to dist/
 npm run build:sb           # Static Storybook to dist/storybook-static
 npm run test:ssr           # Nuxt SSR smoke test of the packed library (run npm run build first)
+npm run test-storybook:ci  # axe on every story of the static build (run npm run build:sb first)
 ```
 
 Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test`.
@@ -135,7 +136,9 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
   `TEDI-Ready/Components/<Category>/<Name>` (`TEDI-Ready/<Base|Content|Layout>/<Name>` for those
   groups), `Community/<Category>/<Name>`, `Documentation/<Page>`. Rules:
   `.agents/skills/contributing/references/stories.md`.
-- The Storybook a11y addon runs axe with `test: 'error'`; fix violations rather than disabling rules.
+- The Storybook a11y addon runs axe with `test: 'error'`; fix violations rather than disabling rules. In CI
+  (`accessibility` job) a violation fails the PR only in components the PR changes; a known issue can be
+  marked `parameters: { a11y: { test: 'todo' } }` with a justification (warn only).
 
 ## Commits
 
@@ -160,7 +163,8 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 - `rc`: pre-releases (base branch for PRs)
 
 PRs to `rc` and `main` run `.github/workflows/vue-test-and-lint.yml`: `lint:ci` + `typecheck`, `build`, `test:ssr` and
-`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`). Chromatic (`.github/workflows/vue-chromatic.yml`,
+`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`), and `accessibility` (axe on every TEDI-Ready
+story via `@storybook/test-runner`, summary comment on the PR, `.github/scripts/a11y-report.mjs`). Chromatic (`.github/workflows/vue-chromatic.yml`,
 `chromatic.config.json`) builds once per PR on approval and on every push to `rc` / `main`, with TurboSnap; react,
 angular and vue share one snapshot quota.
 

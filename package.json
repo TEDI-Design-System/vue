@@ -35,7 +35,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ssr": "node scripts/ssr-smoke.mjs",
-    "release": "npx semantic-release"
+    "release": "npx semantic-release",
+    "test-storybook": "test-storybook",
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,A11Y\" -c \"magenta,blue\" \"http-server dist/storybook-static --port 6007 --silent\" \"wait-on tcp:127.0.0.1:6007 && test-storybook --index-json --url http://127.0.0.1:6007 --junit\""
   },
   "repository": {
     "type": "git",
@@ -63,6 +65,7 @@
     "@semantic-release/npm": "^13.2.0",
     "@storybook/addon-a11y": "10.5.10",
     "@storybook/addon-docs": "10.5.10",
+    "@storybook/test-runner": "^0.26.0",
     "@storybook/vue3-vite": "10.5.10",
     "@testing-library/jest-dom": "^7.0.1",
     "@types/node": "^24.0.0",
@@ -72,9 +75,11 @@
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/test-utils": "^2.6.0",
     "chromatic": "^18.14.5",
+    "concurrently": "^10.0.7",
     "eslint": "^10.15.0",
     "eslint-plugin-vue": "^10.12.1",
     "globals": "^17.14.0",
+    "http-server": "^14.1.1",
     "husky": "^9.1.7",
     "jsdom": "^31.0.1",
     "lint-staged": "^17.6.1",
@@ -96,7 +101,8 @@
     "vite-plugin-static-copy": "^4.1.1",
     "vitest": "^5.1.0",
     "vue": "^3.5.45",
-    "vue-tsc": "^3.3.14"
+    "vue-tsc": "^3.3.14",
+    "wait-on": "^9.5.1"
   },
   "commitlint": {
     "extends": [
