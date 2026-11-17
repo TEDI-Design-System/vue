@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import './icon.scss';
+
 export type TediIconSize = 8 | 12 | 16 | 18 | 24 | 36 | 48;
 export type TediIconType = 'outlined' | 'sharp' | 'rounded';
 export type TediIconColor =

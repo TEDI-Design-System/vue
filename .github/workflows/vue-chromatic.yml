@@ -1,0 +1,387 @@
+name: Chromatic Vue
+
+# Follows angular's Chromatic setup (TEDI-Design-System/angular#824):
+#
+# - One pre-merge build per pull request, on approval. A snapshot is billed
+#   whether or not it changed (a TurboSnap copy still bills at 0.2), and the
+#   react, angular and vue projects share one monthly quota, so a build per push
+#   is not affordable. Approval captures the state that is about to merge.
+# - One build per push to `rc` / `main`, which keeps the baseline current for the
+#   next pull request and covers pull requests merged without an approval.
+#   Angular runs this job in its release workflow; here it lives next to the PR
+#   build so the Chromatic setup is in one file.
+on:
+  pull_request_review:
+    types: [submitted]
+  push:
+    branches:
+      - rc
+      - main
+  workflow_dispatch:
+
+# A second approval on the same PR supersedes the first while it is still
+# running; once it has finished, the `guard` job stops a second approval of the
+# same head from paying for the same snapshots twice.
+concurrency:
+  group: chromatic-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+
+jobs:
+  # Every approval fires this workflow. The build is keyed to the head commit, so
+  # the second approval of an unchanged head would re-buy the same snapshots. The
+  # sticky comment records the commit it was built from; if that commit is still
+  # the head, there is nothing new to see. A push after the approval moves the
+  # head, so re-approving does rebuild.
+  #
+  # A change under `.storybook/`, to the global stylesheets under `src/*/styles/`
+  # (imported by the preview; `externals` in chromatic.config.json), or to a
+  # `vue`, `vite`, `@storybook/` or core version makes Chromatic snapshot every
+  # story, and the `rc` build after the merge has to do the same full build again.
+  # Component stylesheets don't: each SFC imports its own `name.scss`, so
+  # TurboSnap traces a style change to the stories that use the component. So such a PR gets no approval
+  # build: the `rc` build is the one full build, and it comments on the merged PR
+  # if it finds visual changes. Run the workflow by hand to see the diff first.
+  guard:
+    if: |
+      github.event_name == 'workflow_dispatch' || (
+        github.event_name == 'pull_request_review' &&
+        github.event.review.state == 'approved' &&
+        (github.event.pull_request.base.ref == 'rc' || github.event.pull_request.base.ref == 'main') &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.draft == false &&
+        github.event.pull_request.user.login != 'dependabot[bot]'
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # the shared script is checked out
+      pull-requests: write # the skip notice is posted to the PR
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+      previous: ${{ steps.check.outputs.previous }}
+    steps:
+      # Only the shared script is needed, from the base branch: a PR branched
+      # before the script landed doesn't have it.
+      - name: Checkout
+        if: github.event_name != 'workflow_dispatch'
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.base.ref }}
+          sparse-checkout: .github/scripts
+
+      - name: Does this head need a build?
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            if (context.eventName === 'workflow_dispatch') {
+              core.setOutput('build', 'yes');
+              return;
+            }
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const sha = context.payload.pull_request.head.sha;
+            const baseline = require('./.github/scripts/chromatic-baseline.cjs');
+            const { comments, built, previous } = await baseline({ github, context, core }, issue_number);
+            previous.delete(sha);
+            core.setOutput('previous', [...previous].join(' '));
+            if (built.has(sha)) {
+              core.info(`${sha} already has a Chromatic build; skipping this approval.`);
+              core.setOutput('build', 'no');
+              return;
+            }
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number: issue_number, per_page: 100,
+            });
+            const forcesFullBuild = (f) =>
+              f.filename.startsWith('.storybook/') ||
+              /^src\/[^/]+\/styles\//.test(f.filename) ||
+              (f.filename === 'package.json' &&
+                /^[-+]\s*"(vue|vite|@vitejs\/|@storybook\/|storybook|@tedi-design-system\/core)"/m.test(f.patch ?? ''));
+            const config = files.filter(forcesFullBuild).map((f) => f.filename);
+            const marker = '<!-- chromatic-skip -->';
+            const existing = comments.find(
+              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(marker),
+            );
+            if (config.length === 0) {
+              // A later push dropped the change that forced the skip.
+              if (existing) await github.rest.issues.deleteComment({ owner, repo, comment_id: existing.id });
+              core.setOutput('build', 'yes');
+              return;
+            }
+            core.info(`Skipping: this PR changes ${config.join(', ')}, which forces a full build.`);
+            core.setOutput('build', 'no');
+            const body = [
+              marker,
+              '## 🎨 Chromatic',
+              '',
+              `This pull request changes ${config.map((name) => `\`${name}\``).join(', ')}, which makes Chromatic snapshot every story. The approval build is skipped so that full build is paid for once: the \`rc\` build after the merge runs it and comments its result here if it finds visual changes.`,
+              '',
+              'To see the visual diff before merging, run the **Chromatic Vue** workflow by hand on this branch.',
+            ].join('\n');
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+  chromatic:
+    needs: guard
+    if: needs.guard.outputs.build == 'yes'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # the result is posted back to the PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # TurboSnap walks back through git history to find the baseline
+          # build, so a shallow clone would send it into a full rebuild.
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build:sb
+
+      # Chromatic compares against this PR's previous build. After a
+      # force-push its commit is no longer on the branch, so Chromatic would
+      # fall back to a much older build and rebuild everything. GitHub still
+      # serves the commit by SHA.
+      - name: Fetch the commit of the previous build
+        if: needs.guard.outputs.previous != ''
+        continue-on-error: true
+        env:
+          SHAS: ${{ needs.guard.outputs.previous }}
+        run: |
+          for sha in $SHAS; do
+            git fetch --no-tags origin "$sha" || echo "::warning::Could not fetch ${sha}"
+          done
+
+      # chromaui/action rather than the raw CLI, for the build result as step
+      # outputs. Chromatic's GitHub App posts its UI Tests status on `rc`, not
+      # on a PR head commit, so without the comment step below the one build we
+      # spend per PR would report nothing back to the PR.
+      - name: Publish to Chromatic
+        id: chromatic
+        uses: chromaui/action@v18
+        with:
+          projectToken: ${{ secrets.CHROMATIC_TOKEN }}
+          exitZeroOnChanges: true
+
+      - name: Comment the result on the pull request
+        if: github.event_name == 'pull_request_review' && steps.chromatic.outputs.changeCount != ''
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          CHANGE_COUNT: ${{ steps.chromatic.outputs.changeCount }}
+          BUILD_URL: ${{ steps.chromatic.outputs.buildUrl }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const sha = context.payload.pull_request.head.sha;
+            const marker = '<!-- chromatic-pr -->';
+            const count = Number(process.env.CHANGE_COUNT);
+            // The commit is named in the comment, and the machine-readable copy
+            // is what the `guard` job reads to skip a repeat build of this head.
+            const body = [
+              marker,
+              `<!-- chromatic-sha:${sha} -->`,
+              '## 🎨 Chromatic',
+              '',
+              count > 0 ? `${count} visual change(s) to review before merging.` : 'No visual changes.',
+              '',
+              `Built from \`${sha.slice(0, 7)}\`. Commits pushed after this are not covered; approve again to rebuild.`,
+              '',
+              `[View the build](${process.env.BUILD_URL})`,
+            ].join('\n');
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const existing = comments.find(
+              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(marker),
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+      # actualCaptureCount is what is billed at 1x and inheritedCaptureCount is
+      # what TurboSnap copied at 0.2x, so this is the real per-build cost
+      # against the monthly quota rather than an estimate.
+      - name: Record the snapshot usage
+        if: always()
+        env:
+          CAPTURED: ${{ steps.chromatic.outputs.actualCaptureCount }}
+          INHERITED: ${{ steps.chromatic.outputs.inheritedCaptureCount }}
+          CHANGES: ${{ steps.chromatic.outputs.changeCount }}
+          ERRORS: ${{ steps.chromatic.outputs.errorCount }}
+          SPECS: ${{ steps.chromatic.outputs.specCount }}
+          BUILD_URL: ${{ steps.chromatic.outputs.buildUrl }}
+        run: |
+          {
+            echo "### Chromatic"
+            echo ""
+            echo "| metric | value |"
+            echo "| --- | --- |"
+            echo "| Stories | ${SPECS:-n/a} |"
+            echo "| Captured (billed 1x) | ${CAPTURED:-n/a} |"
+            echo "| Inherited via TurboSnap (billed 0.2x) | ${INHERITED:-n/a} |"
+            echo "| Visual changes | ${CHANGES:-n/a} |"
+            echo "| Errored stories | ${ERRORS:-n/a} |"
+            echo "| Build | ${BUILD_URL:-n/a} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Baseline build on `rc` / `main`. The `chore(release)` guard matches angular:
+  # semantic-release pushes its version commit with GITHUB_TOKEN, which does not
+  # trigger workflows today; it would matter if the release moved to an app token.
+  chromatic-branch:
+    if: |
+      github.event_name == 'push' &&
+      !startsWith(github.event.head_commit.message, 'chore(release)')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # the result is posted back to the merged PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build:sb
+
+      # After a squash merge Chromatic also uses the pull request's last build
+      # as a baseline. That build's commit is not in this clone (the branch was
+      # squashed and deleted, or force-pushed), so Chromatic logs "Missing
+      # commit detected" and falls back to a much older build, and the diff to
+      # that build forces a full rebuild. GitHub still serves the commit by
+      # SHA, and the PR's sticky comment records it as `chromatic-sha:`.
+      - name: Find the merged pull request's Chromatic build
+        id: baseline
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner, repo, commit_sha: context.sha,
+            });
+            const pr = prs.find((p) => p.merged_at) ?? prs[0];
+            if (!pr) {
+              core.info('No pull request is associated with this commit.');
+              return;
+            }
+            const baseline = require('./.github/scripts/chromatic-baseline.cjs');
+            const { previous } = await baseline({ github, context, core }, pr.number);
+            core.setOutput('pr', String(pr.number));
+            core.setOutput('shas', [...previous].join(' '));
+
+      - name: Fetch the commits Chromatic compares against
+        if: steps.baseline.outputs.pr != ''
+        continue-on-error: true
+        env:
+          PR: ${{ steps.baseline.outputs.pr }}
+          SHAS: ${{ steps.baseline.outputs.shas }}
+        run: |
+          git fetch --no-tags origin "+refs/pull/${PR}/head:refs/remotes/origin/pull/${PR}" || echo "::warning::Could not fetch the head of #${PR}"
+          for sha in $SHAS; do
+            git fetch --no-tags origin "$sha" || echo "::warning::Could not fetch ${sha}"
+          done
+
+      # exitZeroOnChanges keeps the branch green: a visual change is something
+      # to review, not a broken build.
+      - name: Publish to Chromatic
+        id: chromatic
+        uses: chromaui/action@v18
+        with:
+          projectToken: ${{ secrets.CHROMATIC_TOKEN }}
+          exitZeroOnChanges: true
+
+      # The branch build runs after the pull request merged, so its result has
+      # no PR to land on by default. Map the commit back to its pull request
+      # (this resolves correctly for squash merges) and leave a sticky comment.
+      - name: Comment the result on the merged pull request
+        if: steps.chromatic.outputs.changeCount != '0' && steps.chromatic.outputs.changeCount != '' && steps.chromatic.outputs.buildUrl != '' && steps.chromatic.outputs.buildUrl != 'undefined'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          CHANGE_COUNT: ${{ steps.chromatic.outputs.changeCount }}
+          BUILD_URL: ${{ steps.chromatic.outputs.buildUrl }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner, repo, commit_sha: context.sha,
+            });
+            const pr = prs.find((p) => p.merged_at) ?? prs[0];
+            if (!pr) {
+              core.info('No pull request is associated with this commit; nothing to comment on.');
+              return;
+            }
+            const marker = '<!-- chromatic-rc -->';
+            const branch = context.ref.replace('refs/heads/', '');
+            const body = [
+              marker,
+              '## 🎨 Chromatic',
+              '',
+              `${process.env.CHANGE_COUNT} visual change(s) were detected on \`${branch}\` after this pull request merged.`,
+              '',
+              `[Review and accept them](${process.env.BUILD_URL})`,
+            ].join('\n');
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: pr.number, per_page: 100,
+            });
+            const existing = comments.find(
+              (c) => c.user?.login === 'github-actions[bot]' && c.body?.includes(marker),
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: pr.number, body });
+            }
+
+      - name: Record the snapshot usage
+        if: always()
+        env:
+          CAPTURED: ${{ steps.chromatic.outputs.actualCaptureCount }}
+          INHERITED: ${{ steps.chromatic.outputs.inheritedCaptureCount }}
+          CHANGES: ${{ steps.chromatic.outputs.changeCount }}
+          ERRORS: ${{ steps.chromatic.outputs.errorCount }}
+          SPECS: ${{ steps.chromatic.outputs.specCount }}
+          BUILD_URL: ${{ steps.chromatic.outputs.buildUrl }}
+        run: |
+          {
+            echo "### Chromatic"
+            echo ""
+            echo "| metric | value |"
+            echo "| --- | --- |"
+            echo "| Stories | ${SPECS:-n/a} |"
+            echo "| Captured (billed 1x) | ${CAPTURED:-n/a} |"
+            echo "| Inherited via TurboSnap (billed 0.2x) | ${INHERITED:-n/a} |"
+            echo "| Visual changes | ${CHANGES:-n/a} |"
+            echo "| Errored stories | ${ERRORS:-n/a} |"
+            echo "| Build | ${BUILD_URL:-n/a} |"
+          } >> "$GITHUB_STEP_SUMMARY"

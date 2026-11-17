@@ -2,4 +2,5 @@
 // entries under icons/, so consumers can load a single Material Symbols style.
 @use '@tedi-design-system/core/index-without-icons';
 
-@use '../components/base/icon/icon';
+// Component stylesheets are imported by their components (`import './name.scss'`), not @use'd here:
+// Chromatic's TurboSnap can only trace module imports to the stories that use a component.
