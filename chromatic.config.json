@@ -1,0 +1,10 @@
+{
+  "$schema": "https://www.chromatic.com/config-file.schema.json",
+  "storybookBuildDir": "dist/storybook-static",
+  "autoAcceptChanges": "main",
+  "skip": "dependabot/**",
+  "onlyChanged": true,
+  "externals": ["src/**/*.scss"],
+  "untraced": ["CHANGELOG.md", "src/tedi/index.ts", "src/community/index.ts"],
+  "zip": true
+}
