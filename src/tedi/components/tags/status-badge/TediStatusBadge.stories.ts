@@ -8,7 +8,7 @@ import TediStatusBadge, {
 } from './TediStatusBadge.vue';
 
 /**
- * <a href="https://www.figma.com/file/jWiRIXhHRxwVdMSimKX2FF/TEDI-Design-System-(draft)?type=design&node-id=2385-24154&m=dev" target="_BLANK">Figma ↗</a><br/>
+ * <a href="https://www.figma.com/design/jWiRIXhHRxwVdMSimKX2FF/TEDI-READY?node-id=2385-24154&m=dev" target="_BLANK">Figma ↗</a><br/>
  * <a href="https://www.tedi.ee/1ee8444b7/p/764a67-status-badge" target="_BLANK">Zeroheight ↗</a>
  *
  * An icon-only badge has no visible text: give it a `title`, or text nearby, so its meaning is
@@ -20,7 +20,7 @@ const meta = {
   parameters: {
     design: {
       type: 'figma',
-      url: 'https://www.figma.com/file/jWiRIXhHRxwVdMSimKX2FF/TEDI-Design-System-(draft)?type=design&node-id=2385-24154&m=dev',
+      url: 'https://www.figma.com/design/jWiRIXhHRxwVdMSimKX2FF/TEDI-READY?node-id=2385-24154&m=dev',
     },
   },
 } satisfies Meta<typeof TediStatusBadge>;
