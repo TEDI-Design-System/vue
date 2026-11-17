@@ -29,7 +29,7 @@ To load only one Material Symbols style, use `index-without-icons.css` together 
 TEDI-Ready components are exported from `@tedi-design-system/vue/tedi`, community components from `@tedi-design-system/vue/community`.
 
 ```ts
-import { /* components */ } from '@tedi-design-system/vue/tedi';
+import {} from /* components */ '@tedi-design-system/vue/tedi';
 ```
 
 ## Development

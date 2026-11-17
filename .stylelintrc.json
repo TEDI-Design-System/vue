@@ -1,0 +1,37 @@
+{
+  "plugins": ["stylelint-declaration-strict-value"],
+  "extends": ["stylelint-config-standard-scss", "stylelint-config-recess-order"],
+  "ignoreFiles": ["dist/**", "coverage/**", "node_modules/**"],
+  "rules": {
+    "selector-class-pattern": [
+      "^tedi-[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?:__[a-z][a-z0-9]*(?:-[a-z0-9]+)*)*(?:--[a-z][a-z0-9]+(?:-[a-z0-9]+)*)?$",
+      {
+        "message": "Class selector must start with the 'tedi-' prefix and follow BEM naming (e.g. .tedi-button, .tedi-button__icon, .tedi-button--primary). Selector: \"%s\"",
+        "resolveNestedSelectors": true
+      }
+    ],
+    "scale-unlimited/declaration-strict-value": [
+      "/color$/",
+      { "ignoreValues": ["inherit", "transparent", "currentColor"], "disableFix": true }
+    ],
+    "max-nesting-depth": [4, { "ignore": ["blockless-at-rules", "pseudo-classes"], "ignoreAtRules": ["/include/"] }],
+    "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["deep", "global", "slotted"] }],
+    "scss/no-global-function-names": null,
+    "scss/comment-no-empty": null,
+    "scss/at-if-no-null": null,
+    "scss/operator-no-newline-after": null,
+    "scss/operator-no-unspaced": null,
+    "custom-property-pattern": null,
+    "no-invalid-position-at-import-rule": null,
+    "no-descending-specificity": null,
+    "lightness-notation": null,
+    "block-no-redundant-nested-style-rules": null,
+    "rule-empty-line-before": null
+  },
+  "overrides": [
+    {
+      "files": ["**/*.vue"],
+      "customSyntax": "postcss-html"
+    }
+  ]
+}

@@ -24,8 +24,11 @@
     "./icons/*.css": "./icons/*.css"
   },
   "scripts": {
+    "prepare": "husky",
     "build": "rm -rf dist && vite build --config vite.lib.config.ts",
-    "typecheck": "vue-tsc --noEmit -p tsconfig.lib.json && vue-tsc --noEmit -p tsconfig.node.json"
+    "typecheck": "vue-tsc --noEmit -p tsconfig.lib.json && vue-tsc --noEmit -p tsconfig.node.json",
+    "lint": "stylelint \"src/**/*.{scss,vue}\" --allow-empty-input --fix && eslint . --fix",
+    "lint:ci": "stylelint \"src/**/*.{scss,vue}\" --allow-empty-input --quiet && eslint . --quiet"
   },
   "repository": {
     "type": "git",
@@ -42,15 +45,69 @@
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
     "@vitejs/plugin-vue": "^6.0.11",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.9.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-vue": "^10.12.1",
+    "globals": "^17.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.1",
+    "postcss-html": "^2.0.1",
+    "prettier": "^3.10.1",
     "sass": "^1.108.2",
+    "stylelint": "^17.16.0",
+    "stylelint-config-recess-order": "^7.10.0",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "stylelint-declaration-strict-value": "^1.13.0",
     "typescript": "~6.0.3",
+    "typescript-eslint": "^8.73.0",
     "vite": "^8.3.8",
     "vite-plugin-dts": "^5.1.2",
     "vite-plugin-static-copy": "^4.1.1",
     "vue": "^3.5.45",
     "vue-tsc": "^3.3.14"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "subject-case": [
+        1,
+        "always",
+        "start-case"
+      ],
+      "subject-min-length": [
+        2,
+        "always",
+        10
+      ],
+      "references-empty": [
+        2,
+        "never"
+      ]
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{css,scss}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.vue": [
+      "stylelint --fix",
+      "eslint --fix"
+    ],
+    "*.{js,ts}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
   },
   "publishConfig": {
     "access": "public"

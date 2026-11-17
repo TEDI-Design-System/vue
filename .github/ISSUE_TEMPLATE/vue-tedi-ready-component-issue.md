@@ -2,10 +2,9 @@
 name: Vue TEDI-READY component issue
 about: Use this template if the issue is on the Vue TEDI-READY side, bug, enhancement
   etc
-title: "[Component_name]:"
+title: '[Component_name]:'
 labels: tedi-ready
 assignees: ''
-
 ---
 
 ## Problem
@@ -17,6 +16,7 @@ assignees: ''
 ## Project
 
 ## DoD
+
 - [ ] The component is developed using best practices, conventions, and modern frontend trends
 - [ ] The component follows **BEM naming conventions** (if applicable)
 - [ ] The component implementation **matches the Figma design**, including all defined states and interactions
