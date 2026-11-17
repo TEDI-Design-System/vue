@@ -36,6 +36,7 @@ npm run test:coverage  # Vitest with coverage (80% threshold)
 npm run build          # library build into dist/
 npm run build:sb       # static Storybook into dist/storybook-static
 npm run test:ssr       # Nuxt SSR smoke test of the packed library (after npm run build)
+npm run test-storybook:ci  # axe on every story (after npm run build:sb)
 ```
 
 On Windows, enable symlinks before cloning. `.claude/skills/` links to `.agents/skills/`, and without symlinks Claude Code doesn't find the repository's skills. Turn on Developer Mode, then:
@@ -60,7 +61,7 @@ In short (the full conventions are in [AGENTS.md](AGENTS.md)):
 
 ## Accessibility
 
-TEDI targets WCAG 2.2 level AA. Storybook runs axe on every story (the Accessibility panel) and reports violations as errors. Fix them rather than disabling rules. The automated check catches only part of the problems: TEDI-READY components also need manual testing (keyboard, screen reader, zoom), as listed in the Definition of Done.
+TEDI targets WCAG 2.2 level AA. Storybook runs axe on every story (the Accessibility panel) and reports violations as errors. Pull requests run the same checks on every TEDI-Ready story and comment a summary; a violation in a component the pull request changes fails the check. Fix them rather than disabling rules. The automated check catches only part of the problems: TEDI-READY components also need manual testing (keyboard, screen reader, zoom), as listed in the Definition of Done.
 
 ## CI and releases
 

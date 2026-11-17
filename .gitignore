@@ -33,3 +33,6 @@ junit.xml
 /tests/nuxt-ssr/package-lock.json
 /tests/nuxt-ssr/.nuxt/
 /tests/nuxt-ssr/.output/
+
+# Accessibility test report (CI)
+a11y-report/
