@@ -110,9 +110,7 @@
     ],
     "rules": {
       "subject-case": [
-        1,
-        "always",
-        "start-case"
+        0
       ],
       "subject-min-length": [
         2,
