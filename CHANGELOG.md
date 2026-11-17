@@ -1,3 +1,10 @@
+# [1.0.0-rc.4](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.3...vue-1.0.0-rc.4) (2026-11-17)
+
+
+### Features
+
+* **status-badge:** Add StatusBadge Component [#44](https://github.com/TEDI-Design-System/vue/issues/44) ([#102](https://github.com/TEDI-Design-System/vue/issues/102)) ([9402e39](https://github.com/TEDI-Design-System/vue/commit/9402e399557dc01f96e6b2430a6fe7023a4050e6))
+
 # [1.0.0-rc.3](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.2...vue-1.0.0-rc.3) (2026-11-17)
 
 
