@@ -80,6 +80,39 @@ index.ts            # Named re-exports of the component and its public types
 - SSR safe: no `window`, `document` or other browser APIs at module top level or during setup. Touch
   them in `onMounted` (and clean up in `onBeforeUnmount`). Generate DOM ids with `useId()`.
 
+### API Design
+
+React and angular are references for the **design contract**, not for the API shape. Match their BEM
+classes, core tokens, states, accessibility behaviour and naming; shape the API the Vue way. Compare
+both (they often differ: react puts a lot into props, angular composes) and write the Vue API down in
+the issue before implementing anything non-trivial.
+
+- **Content in slots, not props.** The label or body is the default slot; icons, headers, footers and
+  actions are named slots (`#icon-left`, `#header`, `#footer`). A prop is fine for a plain string or
+  identifier, e.g. an icon name (`icon="home"`).
+- **Configuration in props.** Variants, sizes and flags: `variant`, `size`, `disabled`, `loading`.
+  Prefer one union-typed prop over several booleans (`visualType="secondary"`, not `isSecondary`).
+- **Compound components for anything with parts** (as angular): `TediCard` + `TediCardHeader` +
+  `TediCardContent`, `TediTabs` + `TediTabsList` + `TediTabsTrigger` + `TediTabsContent`, Modal parts.
+  Share state with `provide` / `inject` (typed `InjectionKey`), not prop drilling. This matches the
+  Reka UI part structure the overlays are built on.
+- **State with `v-model`** (`defineModel`): values, `v-model:open`, the active tab. Changes are emitted
+  events (`update:*`, `change`), never `onX` callback props.
+- **Element choice with `as` / `as-child`**, not separate components. `TediButton` renders a `<button>`
+  by default, `as="a"` a link, `:as="RouterLink"` or `NuxtLink` a router link (attributes fall
+  through), and `as-child` merges onto the consumer's own element. Use Reka UI's `Primitive` for this.
+- **No pass-through props.** `class`, `style`, `id`, `aria-*` and `data-*` fall through to the root
+  (or to the element set with `inheritAttrs: false` + `v-bind="$attrs"` when the root is a wrapper).
+  No `className`, `id` or `ariaLabel` props.
+- **Breakpoint-dependent values** come from a shared composable, not per-component breakpoint props.
+- **Directives only for behaviour without markup** (e.g. a focus or scroll helper). Anything that
+  renders content (tooltip, button) is a component.
+- **Names follow react and angular** for the same concept (`variant`, `size`, `TabsTrigger`), so docs
+  and Figma map one to one across the libraries.
+- **Global classes as a documented fallback.** The BEM classes are global, so
+  `class="tedi-button tedi-button--primary"` styles any element, like angular's attribute selectors.
+  The component is the API; document the classes for cases it can't cover, don't design around them.
+
 ### Floating and Overlay Components
 
 Decided in #28: anything that floats or layers (Modal, Sheet, Popover, Tooltip, Dropdown, Select,

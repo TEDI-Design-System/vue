@@ -12,8 +12,11 @@ leave the link out ([stories.md](stories.md)).
 
 1. Fetch design context, screenshots and metadata with the Figma MCP server.
 2. Read the React (`../react/src/tedi/components/`) and Angular (`../angular/src/tedi/components/`)
-   equivalents. Match prop names, values, defaults and behaviour unless there is a Vue-specific reason
-   not to, and note any difference in the plan.
+   equivalents. Match their design contract: BEM classes, tokens, states, behaviour, accessibility and
+   names for the same concepts. Do not copy either API shape: react puts a lot into props, angular
+   composes. Shape the Vue API by "API Design" in `AGENTS.md` (slots for content, props for
+   configuration, compound parts with `provide` / `inject`, `v-model`, `as` / `as-child`), and note
+   every difference from react and angular in the plan.
 3. Check the installed core (`node_modules/@tedi-design-system/core/`) for tokens and mixins.
 
 ## Step 2: Plan
@@ -22,7 +25,9 @@ Write a plan and get it approved before writing code. It covers:
 
 - **Name**: `TediName`, root class `tedi-name`
 - **Category**: the folder under `src/tedi/components/`, the same as React's
-- **API**: props (types, defaults), emits, `v-model` bindings (`defineModel`), slots
+- **API**: props (types, defaults), emits, `v-model` bindings (`defineModel`), slots, and for a component
+  with parts the compound components and what they share via `provide` / `inject`. For anything beyond a
+  single element, write this API into the issue first, with a short comparison to react and angular.
 - **Accessibility**: roles, keyboard interaction, screen reader behaviour, focus management
 - **Dependencies**: existing TEDI components to reuse, new libraries (ask first)
 - **Test plan** and **stories plan** (one story per Figma section)
