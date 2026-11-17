@@ -35,6 +35,7 @@ npm run lint               # Stylelint (SCSS, Vue) + ESLint, with --fix
 npm run lint:ci            # Same without --fix, errors only
 npm run build              # Library build to dist/
 npm run build:sb           # Static Storybook to dist/storybook-static
+npm run test:ssr           # Nuxt SSR smoke test of the packed library (run npm run build first)
 ```
 
 Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test`.
@@ -136,7 +137,9 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 - `main`: production releases
 - `rc`: pre-releases (base branch for PRs)
 
-CI workflows, semantic-release and Chromatic are not set up yet (upcoming issues).
+PRs to `rc` and `main` run `.github/workflows/vue-test-and-lint.yml`: `lint:ci` + `typecheck`, `build`, `test:ssr` and
+`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`). semantic-release and Chromatic are not set up
+yet (upcoming issues).
 
 ## Do NOT
 

@@ -1,0 +1,12 @@
+{
+  "name": "tedi-vue-nuxt-ssr-smoke",
+  "private": true,
+  "type": "module",
+  "description": "Server-renders TEDI Vue components from the packed library. Run via `npm run test:ssr` in the repo root.",
+  "scripts": {
+    "build": "nuxt build"
+  },
+  "dependencies": {
+    "nuxt": "^4.6.4"
+  }
+}

@@ -7,7 +7,14 @@ import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 
 export default defineConfigWithVueTs(
-  globalIgnores(['dist/**', 'coverage/**', 'storybook-static/**']),
+  globalIgnores([
+    'dist/**',
+    'coverage/**',
+    'storybook-static/**',
+    'tests/nuxt-ssr/.nuxt/**',
+    'tests/nuxt-ssr/.output/**',
+    '.claude/worktrees/**',
+  ]),
   {
     files: ['**/*.{js,ts,vue}'],
   },
@@ -26,7 +33,7 @@ export default defineConfigWithVueTs(
     },
   },
   {
-    files: ['*.config.{js,ts}', '.github/**/*.mjs'],
+    files: ['*.config.{js,ts}', '.github/**/*.mjs', 'scripts/**/*.{js,mjs}', 'tests/nuxt-ssr/*.config.ts'],
     languageOptions: {
       globals: globals.node,
     },
