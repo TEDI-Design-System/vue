@@ -93,6 +93,29 @@ Rules:
   `useId()`.
 - Form controls: two-way value through `defineModel`, a native control inside so labels, forms and
   validation work.
+- Floating or layered UI (modal, sheet, popover, tooltip, dropdown, select, toast): build it on the
+  matching Reka UI primitive (`reka-ui`), styled with TEDI classes. Fall back to `@floating-ui/vue`
+  for positioning only when no primitive fits, and then write focus management, Escape / outside
+  click and ARIA wiring yourself. See "Floating and Overlay Components" in `AGENTS.md`.
+- Non-floating components may use a Reka UI primitive (Accordion, Tabs, Checkbox, RadioGroup, Switch,
+  Slider, Pagination, Stepper) when its behaviour matches the Figma design and react's component.
+
+Example, a popover with a TEDI trigger:
+
+```vue
+<template>
+  <PopoverRoot v-model:open="open">
+    <PopoverTrigger as-child>
+      <TediButton visual-type="secondary">{{ label }}</TediButton>
+    </PopoverTrigger>
+    <PopoverPortal>
+      <PopoverContent class="tedi-popover" :side-offset="8">
+        <slot />
+      </PopoverContent>
+    </PopoverPortal>
+  </PopoverRoot>
+</template>
+```
 
 ### Styles
 
