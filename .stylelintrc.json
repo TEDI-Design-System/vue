@@ -1,6 +1,10 @@
 {
   "plugins": ["stylelint-declaration-strict-value"],
-  "extends": ["stylelint-config-standard-scss", "stylelint-config-recess-order"],
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-recommended-vue/scss",
+    "stylelint-config-clean-order/error"
+  ],
   "ignoreFiles": ["dist/**", "coverage/**", "node_modules/**"],
   "rules": {
     "selector-class-pattern": [
@@ -12,10 +16,18 @@
     ],
     "scale-unlimited/declaration-strict-value": [
       "/color$/",
-      { "ignoreValues": ["inherit", "transparent", "currentColor"], "disableFix": true }
+      {
+        "ignoreValues": ["inherit", "transparent", "currentColor"],
+        "disableFix": true
+      }
     ],
-    "max-nesting-depth": [4, { "ignore": ["blockless-at-rules", "pseudo-classes"], "ignoreAtRules": ["/include/"] }],
-    "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["deep", "global", "slotted"] }],
+    "max-nesting-depth": [
+      4,
+      {
+        "ignore": ["blockless-at-rules", "pseudo-classes"],
+        "ignoreAtRules": ["/include/"]
+      }
+    ],
     "scss/no-global-function-names": null,
     "scss/comment-no-empty": null,
     "scss/at-if-no-null": null,
@@ -27,11 +39,5 @@
     "lightness-notation": null,
     "block-no-redundant-nested-style-rules": null,
     "rule-empty-line-before": null
-  },
-  "overrides": [
-    {
-      "files": ["**/*.vue"],
-      "customSyntax": "postcss-html"
-    }
-  ]
+  }
 }
