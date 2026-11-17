@@ -138,8 +138,13 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 - `rc`: pre-releases (base branch for PRs)
 
 PRs to `rc` and `main` run `.github/workflows/vue-test-and-lint.yml`: `lint:ci` + `typecheck`, `build`, `test:ssr` and
-`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`). semantic-release and Chromatic are not set up
-yet (upcoming issues).
+`test:coverage` (uploaded to Codecov; patch target 80% in `.codecov.yml`). Chromatic is not set up yet.
+
+Pushes to `rc` and `main` run `.github/workflows/vue-release.yml`: lint, typecheck and tests, then `npm run build` and
+semantic-release (`release.config.mjs`), which publishes `dist/` to npm (trusted publishing) as `vue-<version>` tags
+(prereleases `x.y.z-rc.n` from `rc`), commits `CHANGELOG.md` and creates the GitHub release. A release from `main` is
+merged back into `rc`. Versions come from Conventional Commit types, so a commit type is a release decision: `feat` is a
+minor, `fix`/`perf` a patch, `BREAKING CHANGE:` a major. Never edit `version` in `package.json` by hand.
 
 ## Do NOT
 

@@ -64,7 +64,9 @@ TEDI targets WCAG 2.2 level AA. Storybook runs axe on every story (the Accessibi
 
 ## CI and releases
 
-Every pull request to `rc` or `main` runs lint, typecheck, the library build, the Nuxt SSR smoke test and the tests with coverage (reported to Codecov). Run `npm run lint`, `npm run typecheck` and `npm test` locally before opening a pull request. Automated releases and Chromatic visual tests are not set up yet.
+Every pull request to `rc` or `main` runs lint, typecheck, the library build, the Nuxt SSR smoke test and the tests with coverage (reported to Codecov). Run `npm run lint`, `npm run typecheck` and `npm test` locally before opening a pull request. Chromatic visual tests are not set up yet.
+
+Releases are automated with semantic-release. Every push to `rc` publishes a prerelease (`x.y.z-rc.n`) and every push to `main` a stable release of `@tedi-design-system/vue` to npm, with a `vue-<version>` tag, a `CHANGELOG.md` entry and a GitHub release. The version bump follows the Conventional Commit types merged since the last release (`fix` patch, `feat` minor, `BREAKING CHANGE` major), so pick the commit type carefully.
 
 ## AI tooling
 
