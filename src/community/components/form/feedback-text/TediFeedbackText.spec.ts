@@ -14,19 +14,19 @@ describe('TediFeedbackText', () => {
     expect(wrapper.classes()).toEqual(['tedi-feedback-text', 'tedi-feedback-text--hint', 'tedi-feedback-text--left']);
     expect(wrapper.text()).toBe('Helper text');
     expect(wrapper.attributes('role')).toBeUndefined();
-    expect(wrapper.attributes('aria-live')).toBe('polite');
+    expect(wrapper.attributes('aria-live')).toBeUndefined();
   });
 
   it.each([
-    ['hint', undefined, 'polite'],
-    ['valid', 'alert', 'assertive'],
-    ['error', 'alert', 'assertive'],
-  ] as const)('renders the %s type with role %s and aria-live %s', (type, role, ariaLive) => {
+    ['hint', undefined],
+    ['valid', 'polite'],
+    ['error', 'polite'],
+  ] as const)('renders the %s type with aria-live %s and no role', (type, ariaLive) => {
     const wrapper = mount(TediFeedbackText, { props: { type }, slots: { default: 'Feedback' } });
 
     expect(wrapper.classes()).toContain(`tedi-feedback-text--${type}`);
-    expect(wrapper.attributes('role')).toBe(role);
     expect(wrapper.attributes('aria-live')).toBe(ariaLive);
+    expect(wrapper.attributes('role')).toBeUndefined();
   });
 
   it.each(['left', 'right'] as const)('renders the %s position', (position) => {
@@ -35,13 +35,13 @@ describe('TediFeedbackText', () => {
     expect(wrapper.classes()).toContain(`tedi-feedback-text--${position}`);
   });
 
-  it('updates the role when the type changes', async () => {
+  it('becomes a live region when a hint turns into an error', async () => {
     const wrapper = mount(TediFeedbackText, { slots: { default: 'Feedback' } });
 
     await wrapper.setProps({ type: 'error' });
 
     expect(wrapper.classes()).toContain('tedi-feedback-text--error');
-    expect(wrapper.attributes('role')).toBe('alert');
+    expect(wrapper.attributes('aria-live')).toBe('polite');
   });
 
   it('keeps the defaults when type and position are passed as undefined', () => {
@@ -83,7 +83,8 @@ describe('TediFeedbackText', () => {
 
     expect(html).toContain('tedi-feedback-text--error');
     expect(html).toContain('tedi-feedback-text--right');
-    expect(html).toContain('role="alert"');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).not.toContain('role=');
     expect(html).toContain('id="field-error"');
     expect(html).toContain('Viga');
   });

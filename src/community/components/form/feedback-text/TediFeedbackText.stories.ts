@@ -10,7 +10,7 @@ import TediFeedbackText from './TediFeedbackText.vue';
  * readers won't connect the text to the control.
  */
 const meta = {
-  title: 'TEDI-Ready/Components/Form/FeedbackText',
+  title: 'Community/Form/FeedbackText',
   component: TediFeedbackText,
   parameters: {
     design: {

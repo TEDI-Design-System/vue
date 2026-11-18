@@ -8,8 +8,9 @@ export type TediFeedbackTextPosition = 'left' | 'right';
 
 export interface TediFeedbackTextProps {
   /**
-   * Type of the feedback. `valid` and `error` are announced to screen readers immediately
-   * (`role="alert"`), `hint` politely when it changes.
+   * Type of the feedback. `valid` and `error` are a polite live region (`aria-live="polite"`):
+   * screen readers announce them when they appear or change, not on page load. A `hint` is not
+   * announced on its own; screen readers read it through the control's `aria-describedby`.
    * @default 'hint'
    */
   type?: TediFeedbackTextType;
@@ -40,12 +41,7 @@ const isAnnounced = computed(() => type === 'valid' || type === 'error');
 </script>
 
 <template>
-  <div
-    data-name="feedback-text"
-    :class="classes"
-    :role="isAnnounced ? 'alert' : undefined"
-    :aria-live="isAnnounced ? 'assertive' : 'polite'"
-  >
+  <div data-name="feedback-text" :class="classes" :aria-live="isAnnounced ? 'polite' : undefined">
     <slot />
   </div>
 </template>
