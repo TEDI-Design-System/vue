@@ -1,0 +1,62 @@
+$tedi-scroll-fade-sizes: (0, 10, 20);
+
+.tedi-scroll-fade {
+  --_tedi-scroll-fade-top: 0%;
+  --_tedi-scroll-fade-bottom: 0%;
+
+  position: relative;
+
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  max-height: inherit;
+
+  &__inner {
+    overflow: auto;
+    flex: 1;
+
+    min-height: 0;
+    max-height: inherit;
+
+    // A mask fades the content itself, so the fade works on any background and in the dark theme.
+    // Only the mask's alpha is used, so its colour is not a design token.
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 var(--_tedi-scroll-fade-top),
+      #000 calc(100% - var(--_tedi-scroll-fade-bottom)),
+      transparent 100%
+    );
+
+    &--custom-scroll {
+      &::-webkit-scrollbar {
+        width: 6px;
+        background-color: var(--general-surface-primary);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 100px;
+        background: var(--general-border-primary);
+
+        &:hover {
+          background-color: var(--general-border-secondary);
+        }
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: var(--general-surface-primary);
+      }
+    }
+  }
+
+  @each $size in $tedi-scroll-fade-sizes {
+    &--top-#{$size} {
+      --_tedi-scroll-fade-top: #{$size * 1%};
+    }
+
+    &--bottom-#{$size} {
+      --_tedi-scroll-fade-bottom: #{$size * 1%};
+    }
+  }
+}
