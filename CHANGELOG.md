@@ -1,3 +1,10 @@
+# [1.0.0-rc.5](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.4...vue-1.0.0-rc.5) (2026-11-19)
+
+
+### Features
+
+* **feedback-text:** Add Community FeedbackText Component [#113](https://github.com/TEDI-Design-System/vue/issues/113) ([aa35d11](https://github.com/TEDI-Design-System/vue/commit/aa35d11c3d4afb2a774bf34627b166d513c10fc9))
+
 # [1.0.0-rc.4](https://github.com/TEDI-Design-System/vue/compare/vue-1.0.0-rc.3...vue-1.0.0-rc.4) (2026-11-17)
 
 
