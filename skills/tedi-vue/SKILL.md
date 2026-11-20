@@ -159,6 +159,13 @@ languages other than `et`, `en` and `ru` get the Estonian texts. In the browser,
 the `tedi-lang` cookie but never reads it: pass the saved value in as `locale` (in Nuxt, `useCookie('tedi-lang')` in a
 plugin, see below). The Storybook "Documentation/Labels" page lists every key.
 
+### 4. Breakpoints (optional)
+
+`useTediBreakpoint()` returns `{ breakpoint, isAbove, isBelow, resolve }` for the TEDI breakpoints (`TEDI_BREAKPOINTS`,
+in `rem`: `xs 0, sm 36, md 48, lg 62, xl 75, xxl 87.5`). Props typed `TediBreakpointValue<T>` take a value per
+breakpoint, mobile first: `:size="{ xs: 'small', md: 'default' }"`. `breakpoint` is `undefined` on the server and until
+mount (values resolve to `xs`), then follows the viewport. For purely visual changes, prefer CSS media queries.
+
 ### Nuxt
 
 No module is needed. Register the stylesheet and import components as above:

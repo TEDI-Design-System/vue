@@ -1,9 +1,10 @@
 import type { App } from 'vue';
 
+import { createBreakpoints } from '../breakpoint-provider/breakpoint';
 import { createLabels, type TediLabelsOptions, type TediLabelsState } from '../label-provider/labels';
 
 /**
- * App-level settings. Each feature (labels; theme and breakpoints later) defines its own options and the plugin
+ * App-level settings. Each feature (labels; theme later) defines its own options and the plugin
  * combines them: `extends TediLabelsOptions, TediThemeOptions`.
  */
 export interface TediOptions extends TediLabelsOptions {
@@ -23,7 +24,7 @@ export interface TediPlugin extends TediLabelsState {
 /**
  * Installs TEDI's app-level settings: `app.use(createTedi({ locale: 'en' }))`. Every feature keeps its state in
  * the app (`provide` with its own `InjectionKey`), so each server-rendered request gets its own. Without the
- * plugin, components use the defaults (Estonian texts).
+ * plugin, components use the defaults (Estonian texts) and keep their own breakpoint listeners.
  *
  * A feature plugs in with a `create<Feature>(options)` that returns `{ state, install }`: spread its `state`
  * into the plugin and call its `install` below.
@@ -31,10 +32,12 @@ export interface TediPlugin extends TediLabelsState {
 export const createTedi = (options: TediOptions = {}): TediPlugin => {
   const { persist = true } = options;
   const labels = createLabels(options);
+  const breakpoints = createBreakpoints();
   return {
     ...labels.state,
     install(app) {
       labels.install(app, persist);
+      breakpoints.install(app);
     },
   };
 };

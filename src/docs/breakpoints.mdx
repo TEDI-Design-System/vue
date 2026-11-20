@@ -1,0 +1,83 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+import { TEDI_BREAKPOINTS } from '../tedi/providers/breakpoint-provider/breakpoint';
+
+<Meta title="Documentation/Breakpoints" />
+
+# Breakpoints
+
+TEDI uses the grid breakpoints of `@tedi-design-system/core`. They are in `rem`, so they move with the user's font
+size like the CSS media queries do; the pixel widths assume the default 16px.
+
+<table>
+  <thead>
+    <tr>
+      <th>Breakpoint</th>
+      <th>From</th>
+      <th>Pixels</th>
+    </tr>
+  </thead>
+  <tbody>
+    {Object.entries(TEDI_BREAKPOINTS).map(([name, rem]) => (
+      <tr key={name}>
+        <td>
+          <code>{name}</code>
+        </td>
+        <td>{rem}rem</td>
+        <td>{rem * 16}px</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+### CSS first
+
+When a change is only visual (layout, spacing, hiding an element), use a CSS media query (core's
+`media-breakpoint-up` mixin). It applies in the server-rendered HTML, before any script runs. Use the composable when
+the markup or behaviour changes.
+
+### `useTediBreakpoint`
+
+```vue
+<script setup lang="ts">
+import { useTediBreakpoint } from '@tedi-design-system/vue/tedi';
+
+const { breakpoint, isAbove, isBelow } = useTediBreakpoint();
+const isMobile = isBelow('md');
+</script>
+```
+
+- `breakpoint`: the current breakpoint, from `xs` to `xxl`.
+- `isAbove(bp)`: the viewport is at `bp` or wider. `isBelow(bp)`: narrower than `bp`. Both take a value, ref or getter
+  and return a computed.
+- `resolve(value)`: the breakpoint value (below) for the current breakpoint, as a computed.
+
+With `createTedi` installed, the app shares one set of `matchMedia` listeners, removed when the app unmounts. Without
+it, each component keeps its own.
+
+### Server rendering and hydration
+
+The server does not know the viewport. `breakpoint` is `undefined` on the server and in the client's first render,
+so hydration matches the server HTML; it updates right after mount. Until then `isAbove` and `isBelow` are both
+`false` and breakpoint values resolve to `xs` (mobile first). In tests (jsdom has no `matchMedia`) it stays
+`undefined`.
+
+### Breakpoint values
+
+A prop that changes by viewport takes one value, or an object with a value from `xs` up. Each applies from its
+breakpoint until the next one that is set:
+
+```vue
+<TediExample size="small" />
+<TediExample :size="{ xs: 'small', md: 'default' }" />
+```
+
+`xs` is required: it is the value before mount and on the server. In a component, type the prop with
+`TediBreakpointValue<T>` and resolve it:
+
+```ts
+import { type TediBreakpointValue, useTediBreakpoint } from '@tedi-design-system/vue/tedi';
+
+const { size = 'default' } = defineProps<{ size?: TediBreakpointValue<'small' | 'default'> }>();
+const currentSize = useTediBreakpoint().resolve(() => size);
+```
