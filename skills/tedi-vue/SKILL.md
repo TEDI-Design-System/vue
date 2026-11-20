@@ -154,9 +154,10 @@ app.use(createTedi({ locale: 'en', labels: { close: { en: 'Dismiss' } } }));
 ```
 
 `useTediLabels()` returns `{ t, locale, setLocale }`; `TediLabelProvider` (`v-model:locale`, `labels`) scopes them to
-part of the page. With vue-i18n or `@nuxtjs/i18n`, pass the app's locale ref as `locale` instead of keeping two; languages other than `et`, `en` and `ru` get the
-Estonian texts. The
-library does not persist the language. The Storybook "Documentation/Labels" page lists every key.
+part of the page. With vue-i18n or `@nuxtjs/i18n`, pass the app's locale ref as `locale` instead of keeping two;
+languages other than `et`, `en` and `ru` get the Estonian texts. In the browser, `createTedi` saves language changes in
+the `tedi-lang` cookie but never reads it: pass the saved value in as `locale` (in Nuxt, `useCookie('tedi-lang')` in a
+plugin, see below). The Storybook "Documentation/Labels" page lists every key.
 
 ### Nuxt
 
@@ -166,6 +167,18 @@ No module is needed. Register the stylesheet and import components as above:
 // nuxt.config.ts
 export default defineNuxtConfig({
   css: ['@tedi-design-system/vue/index.css'],
+});
+```
+
+Install `createTedi` from a plugin, so the server renders the saved language:
+
+```ts
+// app/plugins/tedi.ts
+import { createTedi, type TediLanguage } from '@tedi-design-system/vue/tedi';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const lang = useCookie<TediLanguage | undefined>('tedi-lang');
+  nuxtApp.vueApp.use(createTedi({ locale: lang.value ?? 'et' }));
 });
 ```
 

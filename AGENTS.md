@@ -48,6 +48,9 @@ Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test
 - `src/tedi/components/<category>/<name>/`: TEDI-Ready components. Categories mirror react: `base`,
   `buttons`, `content`, `filter`, `form`, `layout`, `loaders`, `misc`, `navigation`, `notifications`,
   `overlays`, `tags`.
+- `src/tedi/providers/`: app-level state. `create-tedi/` holds the `createTedi` plugin, which combines the
+  features (`label-provider/`, later theme and breakpoints); each feature provides its own `InjectionKey`.
+- `src/tedi/utils/`: internal helpers (e.g. `cookie.ts`), not exported.
 - `src/tedi/styles/index.scss`: the global stylesheet. Loads core's `index-without-icons`; component
   stylesheets are imported by their components.
 - `src/tedi/index.ts`, `src/community/index.ts`: entry point barrels.
@@ -163,7 +166,7 @@ Published subpaths: `/tedi`, `/community`, `/index.css`, `/index-without-icons.c
 ## Testing and Storybook
 
 - Vitest, jsdom, `@vue/test-utils`, `@testing-library/jest-dom` matchers (`vitest.setup.ts`). 80%
-  threshold on statements, branches, functions and lines over `src/tedi/components/**`. Patterns:
+  threshold on statements, branches, functions and lines over `src/tedi/{components,providers,utils}/**`. Patterns:
   `.agents/skills/contributing/references/testing.md`.
 - Stories at `src/tedi/**/*.stories.ts`, docs pages at `src/docs/**/*.mdx`. Titles:
   `TEDI-Ready/Components/<Category>/<Name>` (`TEDI-Ready/<Base|Content|Layout>/<Name>` for those

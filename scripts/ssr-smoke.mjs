@@ -37,10 +37,10 @@ let serverLog = '';
 server.stdout.on('data', (chunk) => (serverLog += chunk));
 server.stderr.on('data', (chunk) => (serverLog += chunk));
 
-const fetchPage = async () => {
+const fetchPage = async (headers = {}) => {
   for (let attempt = 0; attempt < 50; attempt++) {
     try {
-      return await fetch(`http://127.0.0.1:${port}/`);
+      return await fetch(`http://127.0.0.1:${port}/`, { headers });
     } catch {
       await new Promise((r) => setTimeout(r, 200));
     }
@@ -65,6 +65,20 @@ try {
   };
   for (const [name, pattern] of Object.entries(expectations)) {
     if (!pattern.test(html)) failures.push(`missing: ${name}`);
+  }
+
+  // createTedi is installed per request from the tedi-lang cookie (tests/nuxt-ssr/app/plugins/tedi.ts).
+  if (!/<span lang="et" data-ssr-smoke="label">Sulge<\/span>/.test(html)) {
+    failures.push('missing: Estonian label without the tedi-lang cookie');
+  }
+  const english = await (await fetchPage({ cookie: 'tedi-lang=en' })).text();
+  if (!/<span lang="en" data-ssr-smoke="label">Close<\/span>/.test(english)) {
+    failures.push('missing: English label with tedi-lang=en');
+  }
+  // A request after the English one must not inherit its locale (no module-level state).
+  const again = await (await fetchPage()).text();
+  if (!/data-ssr-smoke="label">Sulge</.test(again)) {
+    failures.push('locale leaked between requests');
   }
   if (/(window|document) is not defined/.test(serverLog)) {
     failures.push('server log shows window/document access during SSR');

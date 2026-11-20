@@ -1,5 +1,7 @@
 import { type App, computed, type InjectionKey, inject, isRef, type Ref, ref } from 'vue';
 
+import { persistInCookie } from '../../utils/cookie';
+
 import {
   type TediLabelArgs,
   type TediLabelKey,
@@ -32,10 +34,11 @@ export const createLabelResolver =
 const resolveBuiltIn: TediLabelsContext['resolve'] = (key, locale) =>
   Object.hasOwn(tediLabelsMap, key) ? tediLabelsMap[key as TediLabelKey][locale] : undefined;
 
-export interface TediOptions {
+export interface TediLabelsOptions {
   /**
    * Language of the component texts: `et`, `en` or `ru`. A ref passed in stays the source of truth, e.g. one
-   * derived from vue-i18n's locale; `setLocale` writes to it.
+   * derived from vue-i18n's locale; `setLocale` writes to it. In the browser, changes are saved in the
+   * `tedi-lang` cookie (unless `persist` is off); read it on the server and pass it in here.
    * @default 'et'
    */
   locale?: TediLanguage | Ref<TediLanguage>;
@@ -43,34 +46,29 @@ export interface TediOptions {
   labels?: TediLabels;
 }
 
-export interface TediPlugin {
-  install: (app: App) => void;
+/** The labels part of the `createTedi` plugin. */
+export interface TediLabelsState {
   /** The app's locale. */
   locale: Readonly<Ref<TediLanguage>>;
   /** Changes the app's locale, for code outside components (e.g. a router guard). */
   setLocale: (locale: TediLanguage) => void;
 }
 
-/**
- * Installs the TEDI component texts in an app: `app.use(createTedi({ locale: 'en' }))`. State lives in the app
- * (`provide`), so each server-rendered request gets its own.
- */
-export const createTedi = ({ locale = 'et', labels }: TediOptions = {}): TediPlugin => {
+/** Same cookie name as the angular library, so the choice carries over between TEDI apps. */
+export const TEDI_LANG_COOKIE = 'tedi-lang';
+
+/** App-level labels state, installed by `createTedi`. */
+export const createLabels = ({ locale = 'et', labels }: TediLabelsOptions = {}) => {
   const localeRef = isRef(locale) ? locale : ref(locale);
   const setLocale = (value: TediLanguage) => {
     localeRef.value = value;
   };
-  return {
-    locale: localeRef,
-    setLocale,
-    install(app) {
-      app.provide(TEDI_LABELS_KEY, {
-        locale: localeRef,
-        setLocale,
-        resolve: createLabelResolver(() => labels, resolveBuiltIn),
-      });
-    },
+  const state: TediLabelsState = { locale: localeRef, setLocale };
+  const install = (app: App, persist: boolean) => {
+    app.provide(TEDI_LABELS_KEY, { ...state, resolve: createLabelResolver(() => labels, resolveBuiltIn) });
+    if (persist) persistInCookie(app, TEDI_LANG_COOKIE, localeRef);
   };
+  return { state, install };
 };
 
 /** The nearest provider's context, or the built-in Estonian texts when nothing is installed. */

@@ -8,7 +8,7 @@ Target: the component path given in the task, or the whole suite.
 - `vitest.setup.ts` registers the `@testing-library/jest-dom` matchers (`toBeInTheDocument`,
   `toHaveAttribute`, `toHaveAccessibleName`, ...).
 - Components are mounted with `@vue/test-utils`.
-- Coverage (`npm run test:coverage`): v8, over `src/tedi/components/**/*.{ts,vue}` excluding specs,
+- Coverage (`npm run test:coverage`): v8, over `src/tedi/{components,providers,utils}/**/*.{ts,vue}` excluding specs,
   stories and `index.ts`. 80% threshold on statements, branches, functions and lines. With `CI` set,
   a `junit.xml` report is written too.
 
