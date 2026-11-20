@@ -7,7 +7,8 @@ const meta = {
   component: TediColorTokens,
   // Rendered by colors.mdx, not listed in the sidebar on their own.
   tags: ['!dev', '!autodocs'],
-  parameters: { controls: { disable: true } },
+  // Documentation, not a component: kept out of the axe review.
+  parameters: { controls: { disable: true }, a11y: { test: 'off' } },
 } satisfies Meta<typeof TediColorTokens>;
 
 export default meta;
