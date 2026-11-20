@@ -1,6 +1,10 @@
 import type { Decorator, Preview } from '@storybook/vue3-vite';
+import { h } from 'vue';
+
+import { TediLabelProvider } from '../src/tedi/providers/label-provider';
 
 import { freezeDateInChromatic } from './fixed-date';
+import { StorybookHtmlLang } from './html-lang';
 
 import '../src/tedi/styles/index.scss';
 import '../node_modules/@tedi-design-system/core/icons/_all.scss';
@@ -20,9 +24,15 @@ const themeDecorator: Decorator = (story, context) => {
   return story();
 };
 
+// very story gets its own label provider (Estonian, changeable with
+// setLocale), and <html lang> follows its locale for axe and screen readers.
+const localeDecorator: Decorator = (story) => ({
+  render: () => h(TediLabelProvider, null, () => [h(StorybookHtmlLang), h(story())]),
+});
+
 const preview: Preview = {
   tags: ['autodocs'],
-  decorators: [themeDecorator],
+  decorators: [themeDecorator, localeDecorator],
   globalTypes: {
     theme: {
       name: 'Theme',

@@ -127,7 +127,7 @@ import '@tedi-design-system/vue/icons/outlined.css'; // or rounded.css / sharp.c
 
 ### 2. Use components
 
-There is no plugin and no global registration: import each component where you use it.
+There is no global registration: import each component where you use it.
 
 ```vue
 <script setup lang="ts">
@@ -141,6 +141,22 @@ import { TediIcon, TediStatusBadge } from '@tedi-design-system/vue/tedi';
 ```
 
 Verify the props in the installed `.d.ts` before using them; the example shows the shape, not a reference.
+
+### 3. Language (optional)
+
+Built-in component texts (accessible names, button labels) are Estonian by default; `en` and `ru` ship too. Set the
+language for the app with the plugin, and change it with `setLocale`:
+
+```ts
+import { createTedi } from '@tedi-design-system/vue/tedi';
+
+app.use(createTedi({ locale: 'en', labels: { close: { en: 'Dismiss' } } }));
+```
+
+`useTediLabels()` returns `{ t, locale, setLocale }`; `TediLabelProvider` (`v-model:locale`, `labels`) scopes them to
+part of the page. With vue-i18n or `@nuxtjs/i18n`, pass the app's locale ref as `locale` instead of keeping two; languages other than `et`, `en` and `ru` get the
+Estonian texts. The
+library does not persist the language. The Storybook "Documentation/Labels" page lists every key.
 
 ### Nuxt
 
