@@ -17,7 +17,7 @@ Everyone taking part is expected to follow the [Code of Conduct](https://github.
 
 1. Open an issue first and describe what you plan to do. New components start as a [Discussion](https://github.com/TEDI-Design-System/general/discussions), where the API can be agreed before an issue is created.
 2. Branch off `rc` (fork the repository if you don't have push access). Name the branch `<type>/<issue number>-<short-description>`, for example `feat/123-add-tooltip`.
-3. Write commits in the [commit convention](https://github.com/TEDI-Design-System/general/wiki/Commit-convention) format with the issue number in the header, for example `feat(icon): Add TediIcon Component #15`. A `commit-msg` hook checks the format, and a `pre-commit` hook runs lint-staged on the staged files.
+3. Write commits in the [commit convention](https://github.com/TEDI-Design-System/general/wiki/Commit-convention) format with the issue number in the header, for example `feat(icon): add TediIcon component #15`. A `commit-msg` hook checks the format, and a `pre-commit` hook runs lint-staged on the staged files.
 4. Open a pull request against `rc`. Add `Closes #<issue number>` to the description so the issue closes on merge.
 
 Maintainers and fork contributors have slightly different steps for test environments. See [Contributor workflow](https://github.com/TEDI-Design-System/general/wiki/Contributor-workflow).
