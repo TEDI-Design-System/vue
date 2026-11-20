@@ -61,9 +61,10 @@ import { TediIcon } from '@tedi-design-system/vue/tedi';
 `class`, `style`, `id`, `aria-*` and `data-*` attributes fall through to the component's root element, so there are no
 separate props for them.
 
-### Language
+### App settings
 
-Component texts are Estonian by default. To use English or Russian, install the plugin:
+`createTedi` installs the app-level settings. It is optional: without it, components use the defaults (Estonian
+texts).
 
 ```ts
 import { createTedi } from '@tedi-design-system/vue/tedi';
@@ -73,7 +74,23 @@ createApp(App)
   .mount('#app');
 ```
 
-See [Labels](?path=/docs/documentation-labels--docs) for switching the language, overriding texts and vue-i18n.
+Options: `locale`, the language of the component texts (`et`, `en` or `ru`, a value or a ref, default `et`),
+`labels`, texts that override the built-in ones (see [Labels](?path=/docs/documentation-labels--docs)), and
+`persist`, whether changes are saved in cookies (default `true`).
+
+The settings live in the app (`provide`), not in module state, so every server-rendered request gets its own.
+
+#### Persistence
+
+When the language changes in the browser, TEDI saves it in the `tedi-lang` cookie for 30 days (the same name and
+lifetime as the Angular library), renewed on every visit. Pass `persist: false` when the app stores it itself. TEDI never reads the cookie itself: the app passes the saved value in as `locale`, which is what lets the
+server render the right language. In a client-only app, read it from `document.cookie`:
+
+```ts
+const saved = document.cookie.match(/(?:^|; )tedi-lang=(et|en|ru)(?:;|$)/)?.[1] as TediLanguage | undefined;
+
+app.use(createTedi({ locale: saved ?? 'et' }));
+```
 
 ### Nuxt
 
@@ -86,6 +103,33 @@ export default defineNuxtConfig({
   css: ['@tedi-design-system/vue/index.css'],
 });
 ```
+
+Install `createTedi` from a plugin. `useCookie` reads the cookie from the request on the server and from
+`document.cookie` in the browser, so both render the same language:
+
+```ts
+// app/plugins/tedi.ts
+import { createTedi, type TediLanguage } from '@tedi-design-system/vue/tedi';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const lang = useCookie<TediLanguage | undefined>('tedi-lang');
+  nuxtApp.vueApp.use(createTedi({ locale: lang.value ?? 'et' }));
+});
+```
+
+Keep `<html lang>` equal to the TEDI language, so screen readers pronounce the texts correctly:
+
+```vue
+<!-- app.vue -->
+<script setup lang="ts">
+import { useTediLabels } from '@tedi-design-system/vue/tedi';
+
+const { locale } = useTediLabels();
+useHead({ htmlAttrs: { lang: locale } });
+</script>
+```
+
+With `@nuxtjs/i18n`, pass its locale ref instead (see [Labels](?path=/docs/documentation-labels--docs)).
 
 ### Theming
 

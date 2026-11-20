@@ -41,8 +41,10 @@ const { locale, setLocale } = useTediLabels();
 </template>
 ```
 
-Outside components, call `setLocale` on the plugin: `const tedi = createTedi(); tedi.setLocale('ru');`. The library
-does not remember the language between visits: persist it in the app (or let Nuxt i18n do it) and pass it in.
+Outside components, call `setLocale` on the plugin: `const tedi = createTedi(); tedi.setLocale('ru');`. In the
+browser, the plugin saves the app's language in the `tedi-lang` cookie; pass the saved value back in as `locale` on the
+next visit (see [Get started](?path=/docs/documentation-get-started--docs) for Nuxt). `TediLabelProvider` locales are
+not saved.
 
 ### Overriding texts
 
@@ -109,8 +111,8 @@ app.use(createTedi({ locale }));
 TEDI has texts in Estonian, English and Russian only. When the shared locale is another language (e.g. `fi`),
 components use the Estonian texts. To fall back to English instead, map the other languages to `en` in the `get` above.
 
-In Nuxt, install it from a plugin with `@nuxtjs/i18n`'s locale ref, and switch languages with the module's own
-`setLocale` so its cookie and route handling run:
+In Nuxt, install it from a plugin with `@nuxtjs/i18n`'s locale ref instead of reading the `tedi-lang` cookie, and
+switch languages with the module's own `setLocale` so its cookie and route handling run:
 
 ```ts
 // plugins/tedi.ts

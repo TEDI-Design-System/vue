@@ -14,7 +14,7 @@ export default defineConfig({
     outputFile: { junit: './junit.xml' },
     coverage: {
       provider: 'v8',
-      include: ['src/tedi/{components,providers}/**/*.{ts,vue}'],
+      include: ['src/tedi/{components,providers,utils}/**/*.{ts,vue}'],
       exclude: ['**/*.spec.ts', '**/*.stories.ts', '**/index.ts'],
       reporter: ['text', 'lcov'],
       reportsDirectory: './coverage',

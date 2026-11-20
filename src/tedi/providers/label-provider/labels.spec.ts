@@ -3,7 +3,9 @@ import { describe, expect, expectTypeOf, it } from 'vitest';
 import { createSSRApp, defineComponent, h, nextTick, type Ref, ref } from 'vue';
 import { renderToString } from 'vue/server-renderer';
 
-import { createTedi, type TediLabelsComposable, useTediLabels } from './labels';
+import { createTedi } from '../create-tedi';
+
+import { type TediLabelsComposable, useTediLabels } from './labels';
 import type { TediLabels, TediLanguage } from './labels-map';
 import TediLabelProvider from './TediLabelProvider.vue';
 
