@@ -67,6 +67,11 @@ try {
     if (!pattern.test(html)) failures.push(`missing: ${name}`);
   }
 
+  // The server does not know the viewport: no breakpoint, values resolve to xs.
+  if (!/data-ssr-smoke="breakpoint">none small</.test(html)) {
+    failures.push('missing: breakpoint undefined and xs value on the server');
+  }
+
   // createTedi is installed per request from the tedi-lang cookie (tests/nuxt-ssr/app/plugins/tedi.ts).
   if (!/<span lang="et" data-ssr-smoke="label">Sulge<\/span>/.test(html)) {
     failures.push('missing: Estonian label without the tedi-lang cookie');

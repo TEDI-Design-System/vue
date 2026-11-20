@@ -49,7 +49,7 @@ Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test
   `buttons`, `content`, `filter`, `form`, `layout`, `loaders`, `misc`, `navigation`, `notifications`,
   `overlays`, `tags`.
 - `src/tedi/providers/`: app-level state. `create-tedi/` holds the `createTedi` plugin, which combines the
-  features (`label-provider/`, later theme and breakpoints); each feature provides its own `InjectionKey`.
+  features (`label-provider/`, `breakpoint-provider/`, later theme); each feature provides its own `InjectionKey`.
 - `src/tedi/utils/`: internal helpers (e.g. `cookie.ts`), not exported.
 - `src/tedi/styles/index.scss`: the global stylesheet. Loads core's `index-without-icons`; component
   stylesheets are imported by their components.
@@ -107,7 +107,10 @@ the issue before implementing anything non-trivial.
 - **No pass-through props.** `class`, `style`, `id`, `aria-*` and `data-*` fall through to the root
   (or to the element set with `inheritAttrs: false` + `v-bind="$attrs"` when the root is a wrapper).
   No `className`, `id` or `ariaLabel` props.
-- **Breakpoint-dependent values** come from a shared composable, not per-component breakpoint props.
+- **Breakpoint-dependent values** come from `useTediBreakpoint()`, not per-component breakpoint props. A prop that
+  changes by viewport is typed `TediBreakpointValue<T>` (`size="small"` or `:size="{ xs: 'small', md: 'default' }"`)
+  and read with `resolve(() => size)`. Before mount the breakpoint is `undefined` and values resolve to `xs`, so
+  the server render matches hydration. When the change is only visual, use a CSS media query instead.
 - **Directives only for behaviour without markup** (e.g. a focus or scroll helper). Anything that
   renders content (tooltip, button) is a component.
 - **Names follow react and angular** for the same concept (`variant`, `size`, `TabsTrigger`), so docs
