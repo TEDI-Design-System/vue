@@ -30,8 +30,8 @@ const LabelsDemo = defineComponent({
   name: 'LabelsDemo',
   setup: () => ({ ...useTediLabels(), languages }),
   template: `
-    <div :lang="locale">
-      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+    <div :lang="locale" class="flex flex-column gap-3">
+      <div class="flex gap-2">
         <button
           v-for="language in languages"
           :key="language"
@@ -75,7 +75,7 @@ export const Default: Story = {
       components: { TediLabelProvider, LabelsDemo },
       setup: () => ({ args, updateLocale: (locale: TediLanguage) => updateArgs({ locale }) }),
       template: `
-        <TediLabelProvider :locale="args.locale" :labels="args.labels" @update:locale="updateLocale">
+        <TediLabelProvider v-bind="args" @update:locale="updateLocale">
           <LabelsDemo />
         </TediLabelProvider>
       `,

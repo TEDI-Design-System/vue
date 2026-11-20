@@ -93,12 +93,14 @@ const i18n = createI18n({ legacy: false, locale: 'et', messages });
 app.use(i18n).use(createTedi({ locale: i18n.global.locale as Ref<TediLanguage> }));
 ```
 
-When the app's codes differ (e.g. `et-EE`), map them with a writable `computed`:
+When the app's codes differ (e.g. `et-EE`, `en-GB`, `ru-RU`), map them both ways with a writable `computed`:
 
 ```ts
+const appLocales: Record<TediLanguage, string> = { et: 'et-EE', en: 'en-GB', ru: 'ru-RU' };
+
 const locale = computed<TediLanguage>({
   get: () => i18n.global.locale.value.split('-')[0] as TediLanguage,
-  set: (value) => (i18n.global.locale.value = `${value}-EE`),
+  set: (value) => (i18n.global.locale.value = appLocales[value]),
 });
 
 app.use(createTedi({ locale }));

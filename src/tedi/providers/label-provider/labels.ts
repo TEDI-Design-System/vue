@@ -22,7 +22,9 @@ export const TEDI_LABELS_KEY: InjectionKey<TediLabelsContext> = Symbol('TediLabe
 export const createLabelResolver =
   (labels: () => TediLabels | undefined, parent: TediLabelsContext['resolve']): TediLabelsContext['resolve'] =>
   (key, locale) => {
-    const override = labels()?.[key];
+    const overrides = labels();
+    // Own keys only: `toString` and friends come from Object.prototype.
+    const override = overrides && Object.hasOwn(overrides, key) ? overrides[key] : undefined;
     const value = typeof override === 'object' ? override[locale] : override;
     return value ?? parent(key, locale);
   };

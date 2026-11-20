@@ -52,6 +52,8 @@ describe('useTediLabels', () => {
 
   it('ignores keys inherited from Object.prototype', () => {
     expect(mountProbe({}, { labelKey: 'toString' }).text()).toBe('toString');
+    expect(mountProbe({ tedi: { labels: {} } }, { labelKey: 'toString' }).text()).toBe('toString');
+    expect(mountProbe({ provider: { labels: {} } }, { labelKey: 'hasOwnProperty' }).text()).toBe('hasOwnProperty');
   });
 
   it('types built-in keys and their arguments', () => {
