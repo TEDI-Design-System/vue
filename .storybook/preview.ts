@@ -44,7 +44,12 @@ const preview: Preview = {
     viewMode: 'docs',
     options: {
       storySort: {
-        order: ['Documentation', ['Welcome', '*'], 'TEDI-Ready', 'Community'],
+        order: [
+          'Documentation',
+          ['Welcome', 'Get started', 'Colors', 'CSS utilities', '*', 'Changelog'],
+          'TEDI-Ready',
+          'Community',
+        ],
       },
     },
     a11y: {

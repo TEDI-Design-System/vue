@@ -1,0 +1,22 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks';
+
+import * as ColorStories from './TediColorTokens.stories';
+
+<Meta of={ColorStories} name="Colors" />
+
+# Colors
+
+[Figma ↗](<https://www.figma.com/file/jWiRIXhHRxwVdMSimKX2FF/TEDI-Design-System-(draft)?type=design&node-id=47-32908&mode=dev>)<br />
+[Zeroheight ↗](https://www.tedi.ee/1ee8444b7/p/231068-colors)
+
+Base color tokens from `@tedi-design-system/core`. Brand colors are aliases of base colors. Components use the
+semantic tokens built on top of them (e.g. `--general-text-primary`), and only those change between the light and
+dark theme.
+
+## Brand colors
+
+<Canvas of={ColorStories.BrandColors} sourceState="none" />
+
+## Base colors
+
+<Canvas of={ColorStories.BaseColors} sourceState="none" />

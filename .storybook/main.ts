@@ -24,6 +24,7 @@ const relativeFontUrls = (): Plugin => ({
 const config: StorybookConfig = {
   stories: [
     '../src/docs/**/*.mdx',
+    '../src/docs/**/*.stories.ts',
     '../src/tedi/**/*.mdx',
     '../src/tedi/**/*.stories.ts',
     ...(excludeCommunity ? [] : ['../src/community/**/*.mdx', '../src/community/**/*.stories.ts']),
