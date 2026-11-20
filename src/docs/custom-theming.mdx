@@ -1,0 +1,133 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Documentation/Custom theming" />
+
+# Custom theming
+
+TEDI's colours come from design tokens that core switches on a `tedi-theme--<name>` class on the `<html>` element. The
+`createTedi` plugin keeps exactly one such class there. It supports the built-in themes **Default** and **Dark**, and
+**custom themes generated from design tokens** in Figma (when the project's designer has overridden TEDI variables).
+
+### Setup
+
+Set the theme with the `theme` option of `createTedi`:
+
+```ts
+// main.ts
+import { createTedi } from '@tedi-design-system/vue/tedi';
+
+createApp(App)
+  .use(createTedi({ theme: 'default' }))
+  .mount('#app');
+```
+
+`theme` accepts:
+
+- a built-in theme: `default` or `dark`;
+- a custom theme: any other name, e.g. `custom-theme`;
+- a ref holding either, which stays the source of truth (`setTheme` writes to it).
+
+Without the plugin, or without a class, the `default` theme applies: its tokens are also declared on `:root`.
+
+### Switching at runtime
+
+`useTediTheme()` returns the current theme and `setTheme`. Call it in `setup`:
+
+```vue
+<script setup lang="ts">
+import { useTediTheme } from '@tedi-design-system/vue/tedi';
+
+const { theme, setTheme } = useTediTheme();
+</script>
+
+<template>
+  <button type="button" @click="setTheme(theme === 'dark' ? 'default' : 'dark')">
+    {{ theme === 'dark' ? 'Light theme' : 'Dark theme' }}
+  </button>
+</template>
+```
+
+Outside components (e.g. in a router guard), use the plugin itself: `const tedi = createTedi(); tedi.setTheme('dark');`.
+You only need a switcher if your app lets users change the theme.
+
+The theme updates at once, without a reload. Use the Storybook toolbar (paintbrush icon) to see the built-in themes.
+
+### Behaviour
+
+- In the browser, from the moment the plugin is installed, it removes every other `tedi-theme--*` class from `<html>`
+  and adds `tedi-theme--<theme>`, and does so again on every change. It never touches `<html>` on the server or during
+  component setup.
+- When the app unmounts, it stops updating the class and leaves the last one in place.
+- Changes are saved in the `tedi-theme` cookie for 30 days (the same name and lifetime as the Angular library). An
+  existing cookie is renewed on every visit; no cookie is set until the theme changes. TEDI never reads the cookie:
+  pass the saved value in as `theme` (see [Get started](?path=/docs/documentation-get-started--docs)). Pass
+  `persist: false` to `createTedi` when the app stores the theme itself; the class is still applied.
+
+### Custom themes (Figma)
+
+Only `default` and `dark` ship with the library's CSS. **A custom theme is not bundled**: generate it from your
+project's Figma variables with the
+[TEDI Figma Variable Exporter plugin](https://www.figma.com/community/plugin/1612732083806730958).
+
+1. Define the theme in Figma (e.g. `custom-theme`).
+2. Export the variables with the plugin.
+3. Load the generated CSS after the TEDI stylesheet:
+
+   ```ts
+   import '@tedi-design-system/vue/index.css';
+   import './variables/themes/custom-theme/index.css';
+   ```
+
+4. Select the theme: `createTedi({ theme: 'custom-theme' })`, or `setTheme('custom-theme')` at runtime.
+
+This puts the class on `<html>`:
+
+```html
+<html class="tedi-theme--custom-theme"></html>
+```
+
+The exported CSS variables must be scoped to this class. The theme name is not validated: an unknown name **fails
+silently**, the class lands on `<html>` with no variables behind it and components keep the default theme's values.
+
+`TediTheme` is typed `'default' | 'dark' | (string & {})`, so editors suggest the built-in names and accept any other.
+To check your own names, type a list of them:
+
+```ts
+import type { TediTheme } from '@tedi-design-system/vue/tedi';
+
+const themes = ['custom-theme', 'custom-theme-dark'] as const satisfies readonly TediTheme[];
+```
+
+### Server-side rendering (Nuxt)
+
+The server cannot change `<html>` through the plugin, so render the class with `useHead` from the `tedi-theme` cookie.
+Otherwise the page shows the default theme until the client applies the saved one:
+
+```ts
+// app/plugins/tedi.ts
+import { createTedi, type TediTheme } from '@tedi-design-system/vue/tedi';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const theme = useCookie<TediTheme | undefined>('tedi-theme');
+  nuxtApp.vueApp.use(createTedi({ theme: theme.value ?? 'default' }));
+});
+```
+
+```vue
+<!-- app.vue -->
+<script setup lang="ts">
+import { useTediTheme } from '@tedi-design-system/vue/tedi';
+
+const { theme } = useTediTheme();
+useHead({ htmlAttrs: { class: computed(() => `tedi-theme--${theme.value}`) } });
+</script>
+```
+
+The server and the client then start with the same theme, and the plugin keeps the class in sync after hydration. The
+cookie can be edited by the user: if the theme name ends up in other markup, allow only the names you ship.
+
+### Notes
+
+- Custom themes must define their CSS variables under `.tedi-theme--<name>`.
+- Several themes can be loaded at once (e.g. a light and a dark variant of a brand) as long as their variables are
+  scoped to their own class.

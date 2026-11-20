@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { TediIcon, useTediLabels } from '@tedi-design-system/vue/tedi';
+import { TediIcon, useTediLabels, useTediTheme } from '@tedi-design-system/vue/tedi';
 
 const { t, locale } = useTediLabels();
+const { theme } = useTediTheme();
+useHead({ htmlAttrs: { class: computed(() => `tedi-theme--${theme.value}`) } });
 </script>
 
 <template>

@@ -28,59 +28,49 @@ Themes are a class on `<html>`:
 | `default` | `tedi-theme--default` |
 | `dark`    | `tedi-theme--dark`    |
 
-The default theme's tokens are also declared on `:root`, so a page without a class renders in the default theme. The
-Vue library has no theme provider (unlike React's `ThemeProvider` and Angular's `provideTedi`); manage the class
-yourself.
+The default theme's tokens are also declared on `:root`, so a page without a class renders in the default theme.
 
-A small composable for a Vue SPA. Touch `document` only on the client, and persist the choice if you want it to
-survive reloads:
+Set the theme with the `createTedi` plugin and switch it with `useTediTheme()`:
 
 ```ts
-// useTediTheme.ts
-import { onMounted, ref, watch } from 'vue';
+// main.ts
+import { createTedi } from '@tedi-design-system/vue/tedi';
 
-export type TediTheme = 'default' | 'dark';
-
-export function useTediTheme() {
-  const theme = ref<TediTheme>('default');
-
-  onMounted(() => {
-    try {
-      theme.value = (localStorage.getItem('tedi-theme') as TediTheme | null) ?? 'default';
-    } catch {
-      // storage unavailable: keep the default
-    }
-    watch(
-      theme,
-      (value) => {
-        const html = document.documentElement;
-        html.classList.remove('tedi-theme--default', 'tedi-theme--dark');
-        html.classList.add(`tedi-theme--${value}`);
-        try {
-          localStorage.setItem('tedi-theme', value);
-        } catch {
-          // ignore
-        }
-      },
-      { immediate: true },
-    );
-  });
-
-  return theme;
-}
+app.use(createTedi({ theme: 'default' }));
 ```
 
-In **Nuxt**, set the class through `useHead` so it is server-rendered and there is no flash of the wrong theme. Keep the
-choice in a cookie, which the server can read:
+```vue
+<script setup lang="ts">
+import { useTediTheme } from '@tedi-design-system/vue/tedi';
+
+const { theme, setTheme } = useTediTheme();
+</script>
+
+<template>
+  <button type="button" @click="setTheme(theme === 'dark' ? 'default' : 'dark')">Toggle theme</button>
+</template>
+```
+
+In the browser the plugin keeps exactly one `tedi-theme--*` class on `<html>` and saves changes in the `tedi-theme`
+cookie (30 days, renewed on every visit, same name as React and Angular; `persist: false` turns it off). It never reads the cookie: pass the
+saved value in as `theme`. Without the plugin, `useTediTheme()` reports `default` and `setTheme` does nothing.
+
+In **Nuxt**, read the cookie in a plugin and render the class with `useHead`, so the server renders it and there is no
+flash of the wrong theme:
+
+```ts
+// app/plugins/tedi.ts
+export default defineNuxtPlugin((nuxtApp) => {
+  const theme = useCookie<TediTheme | undefined>('tedi-theme');
+  nuxtApp.vueApp.use(createTedi({ theme: theme.value ?? 'default' }));
+});
+```
 
 ```ts
 // app.vue <script setup>
-const theme = useCookie<'default' | 'dark'>('tedi-theme', { default: () => 'default' });
-
-useHead({ htmlAttrs: { class: () => `tedi-theme--${theme.value}` } });
+const { theme } = useTediTheme();
+useHead({ htmlAttrs: { class: computed(() => `tedi-theme--${theme.value}`) } });
 ```
-
-The cookie name is your choice; `tedi-theme` matches the React and Angular libraries.
 
 ## Design tokens
 
@@ -148,7 +138,7 @@ Only `default` and `dark` are bundled. A custom theme overrides tokens under its
 
 Generate a full theme from your project's Figma variables with the
 [TEDI Figma Variable Exporter plugin](https://www.figma.com/community/plugin/1612732083806730958), load its CSS after
-the TEDI stylesheet, and set `tedi-theme--<name>` on `<html>`. An unknown class fails silently: components keep the
+the TEDI stylesheet, and select it with `createTedi({ theme: '<name>' })` or `setTheme('<name>')`. An unknown class fails silently: components keep the
 default theme's values from `:root`.
 
 ## Overriding component styles

@@ -49,7 +49,7 @@ Before finishing a change, run `npm run lint`, `npm run typecheck` and `npm test
   `buttons`, `content`, `filter`, `form`, `layout`, `loaders`, `misc`, `navigation`, `notifications`,
   `overlays`, `tags`.
 - `src/tedi/providers/`: app-level state. `create-tedi/` holds the `createTedi` plugin, which combines the
-  features (`label-provider/`, later theme and breakpoints); each feature provides its own `InjectionKey`.
+  features (`label-provider/`, `theme-provider/`, later breakpoints); each feature provides its own `InjectionKey`.
 - `src/tedi/utils/`: internal helpers (e.g. `cookie.ts`), not exported.
 - `src/tedi/styles/index.scss`: the global stylesheet. Loads core's `index-without-icons`; component
   stylesheets are imported by their components.

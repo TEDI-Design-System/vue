@@ -22,11 +22,14 @@ describe('createTedi', () => {
   afterEach(clearLangCookie);
 
   it('exposes the app state', () => {
-    const tedi = createTedi({ locale: 'en' });
+    const tedi = createTedi({ locale: 'en', theme: 'dark' });
 
     expect(tedi.locale.value).toBe('en');
     tedi.setLocale('ru');
     expect(tedi.locale.value).toBe('ru');
+    expect(tedi.theme.value).toBe('dark');
+    tedi.setTheme('default');
+    expect(tedi.theme.value).toBe('default');
   });
 
   it('provides its state to components', () => {
@@ -62,13 +65,15 @@ describe('createTedi', () => {
     expect(document.cookie).toContain('tedi-lang=en');
   });
 
-  it('does not write the cookie with persist off', async () => {
+  it('does not write the cookies with persist off', async () => {
     const tedi = createTedi({ persist: false });
     mount(Probe, { global: { plugins: [tedi] } });
 
     tedi.setLocale('ru');
+    tedi.setTheme('dark');
     await nextTick();
 
     expect(document.cookie).not.toContain('tedi-lang');
+    expect(document.cookie).not.toContain('tedi-theme');
   });
 });
