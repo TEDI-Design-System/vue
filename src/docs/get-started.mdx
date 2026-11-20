@@ -64,32 +64,42 @@ separate props for them.
 ### App settings
 
 `createTedi` installs the app-level settings. It is optional: without it, components use the defaults (Estonian
-texts).
+texts, the `default` theme).
 
 ```ts
 import { createTedi } from '@tedi-design-system/vue/tedi';
 
 createApp(App)
-  .use(createTedi({ locale: 'en' }))
+  .use(createTedi({ locale: 'en', theme: 'dark' }))
   .mount('#app');
 ```
 
-Options: `locale`, the language of the component texts (`et`, `en` or `ru`, a value or a ref, default `et`),
-`labels`, texts that override the built-in ones (see [Labels](?path=/docs/documentation-labels--docs)), and
-`persist`, whether changes are saved in cookies (default `true`).
+Options:
+
+- `locale`: the language of the component texts (`et`, `en` or `ru`, a value or a ref, default `et`).
+- `labels`: texts that override the built-in ones (see [Labels](?path=/docs/documentation-labels--docs)).
+- `theme`: the theme (`default`, `dark` or a custom theme's name, a value or a ref, default `default`), see
+  [Custom theming](?path=/docs/documentation-custom-theming--docs).
+- `persist`: whether changes are saved in cookies (default `true`).
 
 The settings live in the app (`provide`), not in module state, so every server-rendered request gets its own.
 
 #### Persistence
 
-When the language changes in the browser, TEDI saves it in the `tedi-lang` cookie for 30 days (the same name and
-lifetime as the Angular library), renewed on every visit. Pass `persist: false` when the app stores it itself. TEDI never reads the cookie itself: the app passes the saved value in as `locale`, which is what lets the
-server render the right language. In a client-only app, read it from `document.cookie`:
+When the language or theme changes in the browser, TEDI saves it in the `tedi-lang` or `tedi-theme` cookie for 30 days
+(the same names and lifetime as the Angular library), renewed on every visit. Pass `persist: false` when the app
+stores them itself. TEDI never reads the cookies itself: the app passes the saved values in as `locale` and `theme`,
+which is what lets the server render the right language and theme. In a client-only app, read them from `document.cookie`:
 
 ```ts
-const saved = document.cookie.match(/(?:^|; )tedi-lang=(et|en|ru)(?:;|$)/)?.[1] as TediLanguage | undefined;
+const cookie = (name: string) => document.cookie.match(new RegExp(`(?:^|; )${name}=([\\w-]+)`))?.[1];
 
-app.use(createTedi({ locale: saved ?? 'et' }));
+app.use(
+  createTedi({
+    locale: (cookie('tedi-lang') as TediLanguage | undefined) ?? 'et',
+    theme: cookie('tedi-theme') ?? 'default',
+  }),
+);
 ```
 
 ### Nuxt
@@ -104,28 +114,32 @@ export default defineNuxtConfig({
 });
 ```
 
-Install `createTedi` from a plugin. `useCookie` reads the cookie from the request on the server and from
-`document.cookie` in the browser, so both render the same language:
+Install `createTedi` from a plugin. `useCookie` reads the cookies from the request on the server and from
+`document.cookie` in the browser, so both render the same language and theme:
 
 ```ts
 // app/plugins/tedi.ts
-import { createTedi, type TediLanguage } from '@tedi-design-system/vue/tedi';
+import { createTedi, type TediLanguage, type TediTheme } from '@tedi-design-system/vue/tedi';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const lang = useCookie<TediLanguage | undefined>('tedi-lang');
-  nuxtApp.vueApp.use(createTedi({ locale: lang.value ?? 'et' }));
+  const theme = useCookie<TediTheme | undefined>('tedi-theme');
+  nuxtApp.vueApp.use(createTedi({ locale: lang.value ?? 'et', theme: theme.value ?? 'default' }));
 });
 ```
 
-Keep `<html lang>` equal to the TEDI language, so screen readers pronounce the texts correctly:
+Render `<html lang>` and the theme class with `useHead`. `lang` lets screen readers pronounce the texts correctly; the
+server cannot touch `<html>` otherwise, so without the class the page would flash the default theme until the client
+applies the saved one:
 
 ```vue
 <!-- app.vue -->
 <script setup lang="ts">
-import { useTediLabels } from '@tedi-design-system/vue/tedi';
+import { useTediLabels, useTediTheme } from '@tedi-design-system/vue/tedi';
 
 const { locale } = useTediLabels();
-useHead({ htmlAttrs: { lang: locale } });
+const { theme } = useTediTheme();
+useHead({ htmlAttrs: { lang: locale, class: computed(() => `tedi-theme--${theme.value}`) } });
 </script>
 ```
 
@@ -133,27 +147,10 @@ With `@nuxtjs/i18n`, pass its locale ref instead (see [Labels](?path=/docs/docum
 
 ### Theming
 
-TEDI applies the active theme as a class on the `<html>` element. Only two themes ship with the library's CSS:
-
-| Theme     | Class                 |
-| --------- | --------------------- |
-| `default` | `tedi-theme--default` |
-| `dark`    | `tedi-theme--dark`    |
-
-Without a class, the `default` theme applies. The library has no theme provider yet, so switch themes by setting the
-class yourself:
-
-```ts
-document.documentElement.classList.remove('tedi-theme--default', 'tedi-theme--dark');
-document.documentElement.classList.add('tedi-theme--dark');
-```
-
-In Nuxt, set it with `useHead({ htmlAttrs: { class: 'tedi-theme--dark' } })` so it is also rendered on the server.
-
-Any other theme is a **custom theme and is not bundled**: generate it from your project's Figma variables with the
-[TEDI Figma Variable Exporter plugin](https://www.figma.com/community/plugin/1612732083806730958), include the generated
-CSS after the TEDI stylesheet and set its class. An unknown class fails silently: components keep rendering with the
-default theme's values.
+TEDI applies the active theme as a `tedi-theme--<name>` class on the `<html>` element. `default` and `dark` ship with the
+library's CSS; without a class, the `default` theme applies. Set the theme with the `theme` option of `createTedi` and
+change it with `useTediTheme().setTheme`. See [Custom theming](?path=/docs/documentation-custom-theming--docs) for
+switching at runtime and for custom themes generated from Figma.
 
 ### Icon fonts
 

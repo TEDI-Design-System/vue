@@ -67,18 +67,31 @@ try {
     if (!pattern.test(html)) failures.push(`missing: ${name}`);
   }
 
-  // createTedi is installed per request from the tedi-lang cookie (tests/nuxt-ssr/app/plugins/tedi.ts).
+  // createTedi is installed per request from the tedi-lang and tedi-theme cookies
+  // (tests/nuxt-ssr/app/plugins/tedi.ts); app.vue renders the theme class on <html> with useHead.
+  const htmlClass = (page) => page.match(/<html[^>]*\sclass="([^"]*)"/)?.[1] ?? '';
   if (!/<span lang="et" data-ssr-smoke="label">Sulge<\/span>/.test(html)) {
     failures.push('missing: Estonian label without the tedi-lang cookie');
   }
-  const english = await (await fetchPage({ cookie: 'tedi-lang=en' })).text();
+  if (htmlClass(html) !== 'tedi-theme--default') {
+    failures.push(
+      `expected <html class="tedi-theme--default"> without the tedi-theme cookie, got "${htmlClass(html)}"`,
+    );
+  }
+  const english = await (await fetchPage({ cookie: 'tedi-lang=en; tedi-theme=dark' })).text();
   if (!/<span lang="en" data-ssr-smoke="label">Close<\/span>/.test(english)) {
     failures.push('missing: English label with tedi-lang=en');
   }
-  // A request after the English one must not inherit its locale (no module-level state).
+  if (htmlClass(english) !== 'tedi-theme--dark') {
+    failures.push(`expected <html class="tedi-theme--dark"> with tedi-theme=dark, got "${htmlClass(english)}"`);
+  }
+  // A request after the English, dark one must not inherit its state (no module-level state).
   const again = await (await fetchPage()).text();
   if (!/data-ssr-smoke="label">Sulge</.test(again)) {
     failures.push('locale leaked between requests');
+  }
+  if (htmlClass(again) !== 'tedi-theme--default') {
+    failures.push('theme leaked between requests');
   }
   if (/(window|document) is not defined/.test(serverLog)) {
     failures.push('server log shows window/document access during SSR');

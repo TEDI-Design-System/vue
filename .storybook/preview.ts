@@ -1,7 +1,9 @@
-import type { Decorator, Preview } from '@storybook/vue3-vite';
-import { h } from 'vue';
+import { type Decorator, type Preview, setup } from '@storybook/vue3-vite';
+import { h, ref } from 'vue';
 
+import { createTedi } from '../src/tedi/providers/create-tedi';
 import { TediLabelProvider } from '../src/tedi/providers/label-provider';
+import type { TediTheme } from '../src/tedi/providers/theme-provider';
 
 import { freezeDateInChromatic } from './fixed-date';
 import { StorybookHtmlLang } from './html-lang';
@@ -12,19 +14,25 @@ import '../node_modules/@tedi-design-system/core/tedi-storybook-styles.scss';
 
 freezeDateInChromatic();
 
-type Theme = 'default' | 'dark';
+// The toolbar's theme, shared by every story app (Storybook is client only, so module state is fine). Each story
+// app installs createTedi with it, and the library keeps the `tedi-theme--<name>` class on <html> in sync, as in a
+// consumer app; preview-head.html paints the surface from the same class.
+const storybookTheme = ref<TediTheme>('default');
+const toolbarTheme = (globals: Record<string, unknown> | undefined) => (globals?.theme as TediTheme) ?? 'default';
 
-// Core keys theme tokens off a `tedi-theme--<name>` class on <html>; preview-head.html paints the
-// surface from the same class. Replace with the library's theme provider once it exists.
+setup((app, context) => {
+  storybookTheme.value = toolbarTheme(context?.globals);
+  // No cookies: the toolbar is the source of truth.
+  app.use(createTedi({ theme: storybookTheme, persist: false }));
+});
+
+// Decorators re-run when a toolbar global changes, without remounting the story app.
 const themeDecorator: Decorator = (story, context) => {
-  const theme = (context.globals.theme ?? 'default') as Theme;
-  const html = document.documentElement;
-  html.classList.remove('tedi-theme--default', 'tedi-theme--dark');
-  html.classList.add(`tedi-theme--${theme}`);
+  storybookTheme.value = toolbarTheme(context.globals);
   return story();
 };
 
-// very story gets its own label provider (Estonian, changeable with
+// Every story gets its own label provider (Estonian, changeable with
 // setLocale), and <html lang> follows its locale for axe and screen readers.
 const localeDecorator: Decorator = (story) => ({
   render: () => h(TediLabelProvider, null, () => [h(StorybookHtmlLang), h(story())]),

@@ -5,7 +5,7 @@ description: >
   (`@tedi-design-system/vue`). Use whenever the user is installing, importing or composing TEDI components in a
   downstream Vue or Nuxt app: `TediIcon`, `TediStatusBadge`, `TediStatusIndicator` and any other `Tedi*` component,
   importing from `@tedi-design-system/vue/tedi` or `/community`, loading `index.css` or a single Material Symbols
-  style, switching the light/dark theme with the `tedi-theme--*` class, styling with TEDI design tokens, or setting
+  style, switching the light/dark or a custom theme (`createTedi({ theme })`, `useTediTheme`), styling with TEDI design tokens, or setting
   TEDI up in Nuxt / SSR. Do NOT use when contributing to the TEDI Vue library repo itself: use its `contributing`
   skill for that.
 ---
@@ -170,16 +170,24 @@ export default defineNuxtConfig({
 });
 ```
 
-Install `createTedi` from a plugin, so the server renders the saved language:
+Install `createTedi` from a plugin, so the server renders the saved language and theme:
 
 ```ts
 // app/plugins/tedi.ts
-import { createTedi, type TediLanguage } from '@tedi-design-system/vue/tedi';
+import { createTedi, type TediLanguage, type TediTheme } from '@tedi-design-system/vue/tedi';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const lang = useCookie<TediLanguage | undefined>('tedi-lang');
-  nuxtApp.vueApp.use(createTedi({ locale: lang.value ?? 'et' }));
+  const theme = useCookie<TediTheme | undefined>('tedi-theme');
+  nuxtApp.vueApp.use(createTedi({ locale: lang.value ?? 'et', theme: theme.value ?? 'default' }));
 });
+```
+
+Render the theme class (and `lang`) on `<html>` from `app.vue`, so there is no flash of the default theme:
+
+```ts
+const { theme } = useTediTheme();
+useHead({ htmlAttrs: { class: computed(() => `tedi-theme--${theme.value}`) } });
 ```
 
 Components server-render. Components that generate DOM ids use Vue's `useId()`, so ids match between server and
@@ -211,9 +219,10 @@ Vue.
 
 ## Theming
 
-Themes are a class on `<html>`: `tedi-theme--default` or `tedi-theme--dark`. With no class the default theme applies
-(its tokens are also declared on `:root`). The library has no theme provider; set the class yourself, and in Nuxt with
-`useHead({ htmlAttrs: { class: 'tedi-theme--dark' } })` so the server renders it too. See
+Themes are a class on `<html>`: `tedi-theme--default`, `tedi-theme--dark` or `tedi-theme--<custom>`. With no class the
+default theme applies (its tokens are also declared on `:root`). Set it with `createTedi({ theme: 'dark' })` and change
+it with `useTediTheme()` (`{ theme, setTheme }`); the plugin keeps exactly one theme class on `<html>` in the browser
+and saves changes in the `tedi-theme` cookie. In Nuxt, also render the class with `useHead` (see Nuxt above). See
 [references/theming.md](references/theming.md) for tokens, custom themes and style overrides.
 
 ## Common Pitfalls
