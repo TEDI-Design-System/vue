@@ -11,8 +11,10 @@ const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
  * <a href="https://www.figma.com/design/jWiRIXhHRxwVdMSimKX2FF/TEDI-READY-(work-in-progress)?node-id=10758-111142&m=dev" target="_BLANK">Figma ↗</a><br/>
  * <a href="https://www.tedi.ee/1ee8444b7/p/32b155-scroll-fade" target="_BLANK">Zeroheight ↗</a>
  *
- * The scroll area takes keyboard focus, and attributes such as `aria-label` go to it: give it an
- * `aria-label` that names the content, or screen readers announce only "group".
+ * The scroll area takes keyboard focus, and attributes such as `aria-label`, `id` and listeners go to
+ * it: give it an `aria-label` that names the content, or screen readers announce only "group".
+ * `class` and `style` stay on the outer element, so layout classes like `flex-grow-1` size the
+ * whole component.
  *
  * ScrollFade takes the `max-height` of its parent, so cap the parent's height to make it scroll.
  */

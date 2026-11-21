@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useTemplateRef } from 'vue';
+import { computed, useAttrs, useTemplateRef } from 'vue';
 
 import { useScrollFade } from './useScrollFade';
 
@@ -43,6 +43,17 @@ defineSlots<{
   default?: () => unknown;
 }>();
 
+const attrs = useAttrs();
+
+// class and style size the root, the box in the consumer's layout. Everything else (aria-label, id,
+// data-*, listeners) goes to the scroller, the element that takes focus. Destructuring reads class
+// and style through the attrs proxy every time, so the computed also updates when attributes are
+// added after mount.
+const scrollerAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs;
+  return rest;
+});
+
 const scroller = useTemplateRef<HTMLDivElement>('scroller');
 const content = useTemplateRef<HTMLDivElement>('content');
 
@@ -66,9 +77,9 @@ const innerClasses = computed(() => [
 </script>
 
 <template>
-  <div data-name="scroll-fade" :class="classes">
-    <!-- Attributes go to the scroller: it takes focus, so an aria-label names what the user scrolls. -->
-    <div ref="scroller" v-bind="$attrs" :class="innerClasses" tabindex="0" role="group" @scroll="update">
+  <div data-name="scroll-fade" :class="[classes, $attrs.class]" :style="$attrs.style">
+    <!-- The scroller takes focus, so an aria-label on the component names what the user scrolls. -->
+    <div ref="scroller" v-bind="scrollerAttrs" :class="innerClasses" tabindex="0" role="group" @scroll="update">
       <div ref="content" class="tedi-scroll-fade__content">
         <slot />
       </div>

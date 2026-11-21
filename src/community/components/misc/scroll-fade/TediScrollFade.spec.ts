@@ -1,6 +1,6 @@
 import { mount, type VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createSSRApp, h, nextTick } from 'vue';
+import { createSSRApp, h, nextTick, ref, type Ref } from 'vue';
 import { renderToString } from 'vue/server-renderer';
 
 import TediScrollFade from './TediScrollFade.vue';
@@ -214,19 +214,48 @@ describe('TediScrollFade', () => {
     expect(wrapper.classes()).toContain('tedi-scroll-fade--top-20');
   });
 
-  it('applies fallthrough attributes to the scroller, which takes focus', () => {
+  it('keeps class and style on the root, which sits in the consumer layout', async () => {
+    const wrapper = mountWithText({ attrs: { class: 'flex-grow-1', style: 'flex-grow: 1;' } });
+    const inner = scroller(wrapper);
+
+    await scrollTo(wrapper, IN_MIDDLE);
+
+    expect(wrapper.classes()).toEqual([
+      'tedi-scroll-fade',
+      'tedi-scroll-fade--top-20',
+      'tedi-scroll-fade--bottom-20',
+      'flex-grow-1',
+    ]);
+    expect(wrapper.attributes('style')).toBe('flex-grow: 1;');
+    expect(inner.classes()).toEqual(['tedi-scroll-fade__inner', 'tedi-scroll-fade__inner--custom-scroll']);
+    expect(inner.attributes('style')).toBeUndefined();
+  });
+
+  it('passes other attributes to the scroller, which takes focus', () => {
     const wrapper = mountWithText({
-      attrs: { 'aria-label': 'Terms of use', id: 'terms', class: 'custom-class', 'data-test': 'terms' },
+      attrs: { 'aria-label': 'Terms of use', id: 'terms', class: 'flex-grow-1', 'data-test': 'terms' },
     });
     const inner = scroller(wrapper);
 
     expect(inner.element).toHaveAccessibleName('Terms of use');
     expect(inner.attributes('id')).toBe('terms');
     expect(inner.attributes('data-test')).toBe('terms');
-    expect(inner.classes()).toContain('custom-class');
-    expect(inner.classes()).toContain('tedi-scroll-fade__inner');
     expect(wrapper.attributes('aria-label')).toBeUndefined();
-    expect(wrapper.classes()).not.toContain('custom-class');
+    expect(wrapper.attributes('id')).toBeUndefined();
+    expect(wrapper.attributes('data-test')).toBeUndefined();
+  });
+
+  it('passes attributes added after mount to the scroller', async () => {
+    // Starts without attributes, so nothing is read from them until they are added.
+    const consumerAttrs: Ref<Record<string, string>> = ref({});
+    const wrapper = mount(() => h(TediScrollFade, consumerAttrs.value, () => 'Lorem ipsum'));
+
+    consumerAttrs.value = { 'aria-label': 'Terms of use', class: 'flex-grow-1' };
+    await nextTick();
+
+    expect(scroller(wrapper).element).toHaveAccessibleName('Terms of use');
+    expect(wrapper.classes()).toContain('flex-grow-1');
+    expect(scroller(wrapper).classes()).not.toContain('flex-grow-1');
   });
 
   it('keeps its focusability and role when the consumer passes their own', () => {
