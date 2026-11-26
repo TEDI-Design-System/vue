@@ -1,0 +1,44 @@
+language: en
+early_access: true
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  collapse_walkthrough: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - rc
+      - main
+
+  tools:
+    eslint:
+      enabled: true
+    stylelint:
+      enabled: true
+
+  path_instructions:
+    - path: '**'
+      instructions: |
+        Read and enforce the project conventions from these files:
+        - `AGENTS.md`: project overview, architecture, component patterns, styling rules, testing setup, and "Do NOT" list.
+        - `.agents/skills/contributing/references/new-component.md`: SFC structure, props and defaults, JSDoc, SCSS, SSR safety and exports.
+        - `.agents/skills/contributing/references/testing.md`: test patterns and coverage.
+        - `.agents/skills/contributing/references/stories.md`: story titles, structure, controls and prose rules.
+        - `.agents/skills/contributing/references/a11y-review.md`: accessibility checks for components and stories.
+
+        Visual parity with TEDI React is checked by humans (the sibling repo isn't available in CI); don't flag differences from react unless the code itself is wrong.
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  pull_requests:
+    scope: auto

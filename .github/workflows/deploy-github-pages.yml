@@ -1,0 +1,130 @@
+name: Continuous Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  build_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      json_branches: ${{ steps.generate-matrix.outputs.json_branches }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate Matrix
+        id: generate-matrix
+        run: |
+          echo "$(.github/workflows/list-storybook-branches.sh)"
+          echo "json_branches=$(.github/workflows/list-storybook-branches.sh)" >> $GITHUB_OUTPUT
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    needs: build_matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: ${{ fromJSON(needs.build_matrix.outputs.json_branches) }}
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install and Build Storybook
+        run: |
+          npm ci
+          npm run build:sb
+          mkdir -p compiled-storybook
+          mv dist/storybook-static/* compiled-storybook/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ strategy.job-index }}
+          path: compiled-storybook/
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs:
+      - build_matrix
+      - build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - uses: actions/download-artifact@v4
+        name: 'Download artifacts'
+        with:
+          path: branches/
+      - name: Create gpages folder
+        shell: bash
+        run: |
+          ls -la branches
+          mkdir gpages
+          mv .github/workflows/index.html ./gpages/index.html
+          cd gpages
+          branches=$(echo '${{ needs.build_matrix.outputs.json_branches }}' | jq -r '.[]')
+          valid_branches=""
+          i=-1
+          for branch in ${branches};
+          do
+            echo "Processing branch: $branch"
+            i=$((i+1))
+            if [[ -d ../branches/$i ]]; then
+              echo "Branch $branch deemed legit, adding to valid branches"
+              valid_branches+="\"$branch\","
+              mkdir -p -- $branch
+              mv ../branches/$i/* ./$branch
+            else
+              echo "Excluding $branch because folder does not exist"
+            fi
+          done
+          valid_branches="[${valid_branches::-1}]"
+          # Last-commit date per branch (Europe/Tallinn) for the In-development cards.
+          git -C .. fetch origin --no-tags --quiet '+refs/heads/*:refs/remotes/origin/*' || true
+          branch_updated="{}"
+          for b in $(echo "$valid_branches" | jq -r '.[]'); do
+            d=$(TZ=Europe/Tallinn git -C .. log -1 --format=%cd --date=format-local:'%d.%m.%Y %H:%M' "origin/$b" 2>/dev/null || echo "")
+            branch_updated=$(echo "$branch_updated" | jq -c --arg k "$b" --arg v "$d" '. + {($k): $v}')
+          done
+          # Inject the data object the page renders: framework + main/rc versions &
+          # publish timestamps (from npm) + the valid branch list + per-branch commit dates.
+          # Change "Vue" and the package name in the React/Angular repos; index.html stays identical.
+          node ../.github/workflows/pages-release-info.mjs "Vue" "@tedi-design-system/vue" \
+            | jq -c --argjson branches "$valid_branches" --argjson updated "$branch_updated" \
+              '. + {branches: $branches, branchUpdated: $updated}' \
+            >> index.html
+          cat ../.github/workflows/index_suffix.html >> index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./gpages/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

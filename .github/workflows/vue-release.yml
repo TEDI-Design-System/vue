@@ -1,0 +1,102 @@
+name: Release TEDI Vue library
+
+on:
+  push:
+    branches:
+      - rc
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Disable ESLint problem matcher
+        run: echo "::remove-matcher owner=eslint::"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint:ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Test
+        run: npm test
+
+  # Builds the library into dist/ and lets semantic-release version, tag and publish it from there
+  # (pkgRoot: dist). npm auth is trusted publishing only (OIDC, hence id-token: write), the same as
+  # react and angular: no npm token is involved. Storybook is never built here, because build:sb
+  # writes into dist/ and would end up in the published package.
+  build-and-deploy:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Build and publish npm package
+        run: |
+          npm ci
+          npm run build
+          ls -la dist
+          git pull
+          npm run release
+        env:
+          HUSKY: 0
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # A release from main commits the changelog and tags main; merging main back keeps rc ahead of it,
+  # so the next rc prerelease is computed from the latest stable release.
+  merge-to-rc:
+    needs: build-and-deploy
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Merge main into rc
+        run: |
+          git fetch origin rc
+          git checkout rc
+          git merge origin/main --no-edit || true
+          git push origin rc

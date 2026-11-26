@@ -1,0 +1,3 @@
+community:
+  - changed-files:
+      - any-glob-to-all-files: ['src/community/**']

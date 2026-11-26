@@ -1,0 +1,38 @@
+# dependencies
+node_modules
+
+# build output
+/dist
+*.tsbuildinfo
+
+# logs
+npm-debug.log*
+
+# IDEs and editors
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# System files
+.DS_Store
+Thumbs.db
+
+# test output
+/coverage
+junit.xml
+
+# Storybook
+*storybook.log
+
+# Claude Code agent worktrees
+/.claude/worktrees/
+
+# Nuxt SSR smoke test fixture
+/tests/nuxt-ssr/node_modules/
+/tests/nuxt-ssr/package-lock.json
+/tests/nuxt-ssr/.nuxt/
+/tests/nuxt-ssr/.output/
+
+# Accessibility test report (CI)
+a11y-report/
