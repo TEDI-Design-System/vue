@@ -1,0 +1,154 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+import { tediLabelsMap } from '../tedi/providers/label-provider/labels-map';
+
+<Meta title="Documentation/Labels" />
+
+# Labels
+
+Components ship their texts (accessible names, button labels, counts) in Estonian, English and Russian. Estonian is
+the default.
+
+### Setup
+
+Install the plugin once to set the language for the whole app:
+
+```ts
+// main.ts
+import { createTedi } from '@tedi-design-system/vue/tedi';
+
+createApp(App)
+  .use(createTedi({ locale: 'en' }))
+  .mount('#app');
+```
+
+Without the plugin, components use the Estonian texts, so tests and Estonian-only apps need no setup.
+
+### Changing the language
+
+Components get the texts and the locale from `useTediLabels()`. Its `setLocale` changes the language, e.g. in a
+language switcher:
+
+```vue
+<script setup lang="ts">
+import { useTediLabels } from '@tedi-design-system/vue/tedi';
+
+const { locale, setLocale } = useTediLabels();
+</script>
+
+<template>
+  <button type="button" :aria-pressed="locale === 'en'" @click="setLocale('en')">English</button>
+</template>
+```
+
+Outside components, call `setLocale` on the plugin: `const tedi = createTedi(); tedi.setLocale('ru');`. The library
+does not remember the language between visits: persist it in the app (or let Nuxt i18n do it) and pass it in.
+
+### Overriding texts
+
+`labels` replaces built-in texts and adds new keys. A value is one text for every language, or an object with a text
+per language; languages left out keep the built-in text. Function labels take the same arguments as the built-in one.
+
+```ts
+createTedi({
+  locale: 'en',
+  labels: {
+    'scroll-fade.label': 'Results', // every language
+    close: { en: 'Dismiss' }, // English only, et and ru keep the built-in text
+  },
+});
+```
+
+`t` returns the text for a key in the current locale, else the Estonian text, else the key itself:
+
+```ts
+const { t } = useTediLabels();
+const label = computed(() => t('scroll-fade.label'));
+```
+
+### One part of the page
+
+`TediLabelProvider` sets the locale or labels for its content only, and inherits the rest from the plugin or an
+enclosing provider. It renders no element. `setLocale` inside it changes the provider's locale, which
+`v-model:locale` syncs back to the parent.
+
+```vue
+<TediLabelProvider locale="ru" :labels="{ close: 'Скрыть' }">
+  <RussianSection />
+</TediLabelProvider>
+```
+
+### vue-i18n and Nuxt i18n
+
+Pass the app's locale ref in, so TEDI follows the app's language. With `legacy: false` and the locale codes `et`,
+`en` and `ru`, share vue-i18n's ref directly:
+
+```ts
+import type { Ref } from 'vue';
+import { createI18n } from 'vue-i18n';
+import { createTedi, type TediLanguage } from '@tedi-design-system/vue/tedi';
+
+const i18n = createI18n({ legacy: false, locale: 'et', messages });
+
+app.use(i18n).use(createTedi({ locale: i18n.global.locale as Ref<TediLanguage> }));
+```
+
+When the app's codes differ (e.g. `et-EE`, `en-GB`, `ru-RU`), map them both ways with a writable `computed`:
+
+```ts
+const appLocales: Record<TediLanguage, string> = { et: 'et-EE', en: 'en-GB', ru: 'ru-RU' };
+
+const locale = computed<TediLanguage>({
+  get: () => i18n.global.locale.value.split('-')[0] as TediLanguage,
+  set: (value) => (i18n.global.locale.value = appLocales[value]),
+});
+
+app.use(createTedi({ locale }));
+```
+
+TEDI has texts in Estonian, English and Russian only. When the shared locale is another language (e.g. `fi`),
+components use the Estonian texts. To fall back to English instead, map the other languages to `en` in the `get` above.
+
+In Nuxt, install it from a plugin with `@nuxtjs/i18n`'s locale ref, and switch languages with the module's own
+`setLocale` so its cookie and route handling run:
+
+```ts
+// plugins/tedi.ts
+import type { Ref } from 'vue';
+import { createTedi, type TediLanguage } from '@tedi-design-system/vue/tedi';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(createTedi({ locale: nuxtApp.$i18n.locale as Ref<TediLanguage> }));
+});
+```
+
+### Available labels
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Components</th>
+      <th>Description</th>
+      <th>et</th>
+      <th>en</th>
+      <th>ru</th>
+    </tr>
+  </thead>
+  <tbody>
+    {Object.entries(tediLabelsMap).map(([key, entry]) => (
+      <tr key={key}>
+        <td>
+          <code>{key}</code>
+        </td>
+        <td>{entry.components.join(', ')}</td>
+        <td>{entry.description}</td>
+        {['et', 'en', 'ru'].map((language) => (
+          <td key={language}>
+            {typeof entry[language] === 'function' ? <code>{String(entry[language])}</code> : entry[language]}
+          </td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>

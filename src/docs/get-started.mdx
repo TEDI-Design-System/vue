@@ -61,6 +61,20 @@ import { TediIcon } from '@tedi-design-system/vue/tedi';
 `class`, `style`, `id`, `aria-*` and `data-*` attributes fall through to the component's root element, so there are no
 separate props for them.
 
+### Language
+
+Component texts are Estonian by default. To use English or Russian, install the plugin:
+
+```ts
+import { createTedi } from '@tedi-design-system/vue/tedi';
+
+createApp(App)
+  .use(createTedi({ locale: 'en' }))
+  .mount('#app');
+```
+
+See [Labels](?path=/docs/documentation-labels--docs) for switching the language, overriding texts and vue-i18n.
+
 ### Nuxt
 
 The library is SSR safe and works in Nuxt without a module. Add the stylesheet to `nuxt.config.ts` and import components
