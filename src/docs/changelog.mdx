@@ -1,0 +1,13 @@
+import { Meta, Markdown } from '@storybook/addon-docs/blocks';
+import Changelog from '../../CHANGELOG.md?raw';
+
+<Meta title="Documentation/Changelog" />
+
+# Changelog
+
+{/*
+  The docs table of contents lists h3 headings only. semantic-release writes versions as h1 (h2 for
+  patches) and change types as h3: make versions h3 and change types h4 so the contents list versions.
+*/}
+
+<Markdown>{Changelog.replace(/^### /gm, '#### ').replace(/^##? /gm, '### ')}</Markdown>

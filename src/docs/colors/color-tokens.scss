@@ -1,0 +1,50 @@
+.tedi-color-tokens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tedi-dimensions-13);
+  color: var(--general-text-primary);
+
+  &__title {
+    margin: 0 0 var(--tedi-dimensions-07);
+    text-transform: capitalize;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tedi-dimensions-13);
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tedi-dimensions-03);
+    width: 10rem;
+  }
+
+  &__name {
+    overflow-wrap: anywhere;
+  }
+
+  &__value {
+    font-size: var(--body-small-regular-size);
+    color: var(--general-text-secondary);
+    overflow-wrap: anywhere;
+  }
+
+  &__main {
+    align-self: flex-start;
+
+    padding: 0 var(--tedi-dimensions-03);
+    border: 1px solid var(--general-border-brand);
+    border-radius: var(--tedi-radius-02-default);
+
+    font-size: var(--body-small-regular-size);
+    color: var(--general-text-brand);
+  }
+}
